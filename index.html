@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nikola Radeski — Blurr Studios</title>
+  
+  <!-- Styling & Typographic Scales -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            amber: {
+              500: '#f59e0b',
+              600: '#d97706',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Premium Font Imports -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Browser Icons Library -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Continuous horizontal ticker */
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      animation: marquee 35s linear infinite;
+    }
+    /* Webkit scrollbars styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #262626;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #f59e0b;
+    }
+  </style>
+</head>
+<body class="bg-[#fafafa] text-neutral-900 dark:bg-[#0a0a0a] dark:text-neutral-100 transition-colors duration-500 font-sans selection:bg-amber-500 selection:text-black">
+
+  <!-- THEME TOGGLER FLOATER -->
+  <div class="fixed top-24 right-4 md:right-8 z-40">
+    <button id="theme-btn" class="p-3 rounded-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200 shadow-xl hover:border-amber-500 hover:text-amber-500 transition-all duration-300 cursor-pointer">
+      <i data-lucide="moon" class="w-4 h-4"></i>
+    </button>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section id="home" class="relative w-full min-h-screen flex flex-col justify-between overflow-hidden px-4 md:px-12 py-8 select-none border-b border-neutral-100 dark:border-neutral-900">
+    <!-- Honeycomb 3D Grid Overlay -->
+    <div class="absolute inset-0 z-0 opacity-10 dark:opacity-[0.03] pointer-events-none bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80');"></div>
+    
+    <div class="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <!-- Top Navigation Header -->
+    <div class="relative z-10 w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-neutral-200/50 dark:border-neutral-800/40 pb-6">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 bg-black dark:bg-white rounded-xl flex items-center justify-center text-white dark:text-black font-mono font-bold text-lg shadow-md">
+          B
+        </div>
+        <div>
+          <h1 class="text-base font-extrabold tracking-widest text-neutral-900 dark:text-white uppercase leading-none font-sans">BLURR.</h1>
+          <p class="text-[9px] font-mono text-neutral-500 tracking-wider uppercase mt-1">Creative Direction Studio</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="flex h-2.5 w-2.5 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Available for Malta Contracts</span>
+        </div>
+        <div class="hidden md:flex items-center gap-2 border-l border-neutral-300 dark:border-neutral-850 pl-6">
+          <i data-lucide="map-pin" class="w-4 h-4 text-neutral-400"></i>
+          <span class="text-xs text-neutral-600 dark:text-neutral-400 font-sans">Valletta, Malta</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Layout Showcase -->
+    <div class="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-6 py-12">
+      <div class="lg:col-span-4 flex flex-col justify-center text-left pointer-events-none">
+        <div class="mb-2 flex items-center gap-2">
+          <i data-lucide="award" class="w-5 h-5 text-amber-500"></i>
+          <span class="text-xs font-mono font-semibold tracking-widest text-amber-600 uppercase">Award Winning Designer</span>
+        </div>
+        <h2 id="first-title" class="text-6xl md:text-8xl xl:text-9xl font-extrabold tracking-tighter text-neutral-950 dark:text-white leading-none transition-transform duration-300 hover:scale-[1.01] hover:text-amber-500">BLURR</h2>
+      </div>
+
+      <!-- Tech Cybernetic Core Centerpiece -->
+      <div class="lg:col-span-4 flex justify-center items-center py-6">
+        <div id="portrait-card" class="relative w-72 h-96 md:w-80 md:h-[420px] rounded-[48px] overflow-hidden bg-neutral-900 shadow-2xl border border-white/15 dark:border-neutral-800 pointer-events-auto transform transition-all duration-500 hover:scale-[1.03] group">
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent z-10"></div>
+          <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80" alt="Cyber Glass Core Abstract" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          
+          <div class="absolute bottom-6 left-6 right-6 z-20 flex flex-col gap-1.5 text-left">
+            <span class="bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 w-fit text-[10px] font-mono text-neutral-200 flex items-center gap-1.5 mb-1">
+              <i data-lucide="flame" class="w-3.5 h-3.5 text-amber-500 fill-amber-500 animate-pulse"></i> Cyber System Interface
+            </span>
+            <h3 class="text-xl md:text-2xl font-bold font-sans text-white tracking-tight">Blurr Systems™</h3>
+            <p class="text-xs text-neutral-350 text-neutral-350 font-light text-neutral-300">Engineering advanced futuristic digital spaces.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-4 flex flex-col justify-center text-left lg:text-right pointer-events-none">
+        <div class="mb-2 lg:ml-auto flex items-center gap-2">
+          <span class="text-xs font-mono font-semibold tracking-widest text-neutral-500 uppercase">Designer & Founder</span>
+          <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
+        </div>
+        <h2 id="second-title" class="text-6xl md:text-8xl xl:text-9xl font-extrabold tracking-tighter text-neutral-950 dark:text-white leading-none transition-transform duration-300 hover:scale-[1.01] hover:text-amber-500">STUDIO</h2>
+      </div>
+    </div>
+
+    <!-- Bottom Status Bar -->
+    <div class="relative z-10 w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-t border-neutral-200/50 dark:border-neutral-800/40 pt-6">
+      <div>
+        <p class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest mb-1">HQ VALLETTA, MALTA</p>
+        <div class="flex items-center gap-2 text-neutral-800 dark:text-neutral-300">
+          <i data-lucide="clock" class="w-4 h-4 text-amber-500 animate-spin" style="animation-duration: 8s;"></i>
+          <span id="cet-clock" class="text-sm font-semibold font-mono tracking-tight text-neutral-900 dark:text-white">CET Clock Syncing...</span>
+        </div>
+      </div>
+      <button onclick="openModal('schedule')" class="group flex items-center gap-2 bg-neutral-950 dark:bg-white text-white dark:text-black font-semibold font-sans px-6 py-3.5 rounded-2xl hover:bg-amber-500 hover:text-black dark:hover:bg-amber-500 dark:hover:text-black shadow-xl transition-all duration-300">
+        <span>Book Collaboration</span>
+        <i data-lucide="arrow-down-right" class="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- REVOLUTIONARY MICRO SERVICES / SKILLS -->
+  <section id="skills" class="relative w-full py-16 md:py-24 bg-[#f4f4f4] dark:bg-neutral-900/60 px-4 md:px-12 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      
+      <div class="lg:col-span-4 lg:sticky lg:top-24 flex flex-col gap-8">
+        <div>
+          <p class="text-xs font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Capabilities
+          </p>
+          <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-neutral-950 dark:text-white leading-tight">What do I best?</h2>
+          <p class="text-neutral-600 dark:text-neutral-300 font-sans mt-4 leading-relaxed text-sm md:text-base">I shape digital empires, custom frameworks, interactive storytelling models, and high-conversion assets designed directly inside Valletta, Malta.</p>
+        </div>
+
+        <!-- Sidebar mini visual core card -->
+        <div class="hidden lg:block rounded-3xl bg-[#fafafa] dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-850 p-5 shadow-lg">
+          <div class="relative w-full h-[220px] rounded-2xl overflow-hidden mb-4">
+            <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=600&q=80" alt="Core Cyber Image" class="w-full h-full object-cover" />
+          </div>
+          <h4 class="text-base font-extrabold text-neutral-900 dark:text-white leading-tight">Blurr Systems</h4>
+          <p class="text-[11px] font-mono text-neutral-400 mt-1">High-Precision Automation Node</p>
+        </div>
+      </div>
+
+      <!-- Skills Accordion Loop -->
+      <div class="lg:col-span-8 flex flex-col gap-4">
+        
+        <!-- Accordion Item 01 -->
+        <div class="rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 transition-all duration-300 relative overflow-hidden" id="accordion-1">
+          <button onclick="toggleAccordion(1)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none">
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-mono text-neutral-400 font-bold">01</span>
+              <div class="p-2 relative rounded-2xl bg-neutral-100 dark:bg-neutral-900">
+                <i data-lucide="code" class="w-5 h-5 text-amber-500"></i>
+              </div>
+              <div>
+                <span class="text-[9px] font-mono font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">Top Performing</span>
+                <h3 class="text-lg md:text-xl font-extrabold text-neutral-900 dark:text-white mt-1">Web Design</h3>
+              </div>
+            </div>
+            <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 transition-transform duration-300" id="chevron-1"></i>
+          </button>
+          <div id="content-1" class="hidden px-6 pb-6 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-700 dark:text-neutral-300">
+            <p class="text-sm md:text-base leading-relaxed mb-6">I design no-code websites and bespoke native experiences that are fully responsive, mobile-ready, and highly polished. Each site is custom crafted for lightning-speed performance, optimal SEO structures, and dynamic visual storytelling.</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">React.JS</span>
+              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">TailwindCSS</span>
+              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Framer Motion</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion Item 02 -->
+        <div class="rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 transition-all duration-300 relative overflow-hidden" id="accordion-2">
+          <button onclick="toggleAccordion(2)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none">
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-mono text-neutral-400 font-bold">02</span>
+              <div class="p-2 relative rounded-2xl bg-neutral-100 dark:bg-neutral-900">
+                <i data-lucide="layout-grid" class="w-5 h-5 text-amber-500"></i>
+              </div>
+              <div>
+                <span class="text-[9px] font-mono font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">MVP Launchpad</span>
+                <h3 class="text-lg md:text-xl font-extrabold text-neutral-900 dark:text-white mt-1">Product Design</h3>
+              </div>
+            </div>
+            <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 transition-transform duration-300" id="chevron-2"></i>
+          </button>
+          <div id="content-2" class="hidden px-6 pb-6 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-700 dark:text-neutral-300">
+            <p class="text-sm md:text-base leading-relaxed mb-6">I build interface ideas from conceptual layout to live go-to-market products. I assist startups with MVP mapping, pitch presentation decks, brand identity layouts, and investor collaterals.</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Wireframes</span>
+              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Startups Strategy</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion Item 03 -->
+        <div class="rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 transition-all duration-300 relative overflow-hidden" id="accordion-3">
+          <button onclick="toggleAccordion(3)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none">
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-mono text-neutral-400 font-bold">03</span>
+              <div class="p-2 relative rounded-2xl bg-neutral-100 dark:bg-neutral-900">
+                <i data-lucide="database" class="w-5 h-5 text-amber-500"></i>
+              </div>
+              <div>
+                <span class="text-[9px] font-mono font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">Future Core</span>
+                <h3 class="text-lg md:text-xl font-extrabold text-neutral-900 dark:text-white mt-1">Advanced Systems</h3>
+              </div>
+            </div>
+            <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 transition-transform duration-300" id="chevron-3"></i>
+          </button>
+          <div id="content-3" class="hidden px-6 pb-6 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-700 dark:text-neutral-300">
+            <p class="text-sm md:text-base leading-relaxed mb-6">Designing and deploying advanced, automated digital assets powered by next-generation web tools and serverless architectures tailored to maintain state across high-end network layers.</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Express API</span>
+              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Serverless</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT / PROFILE BIOGRAPHY -->
+  <section id="about" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 select-none overflow-hidden">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-5 relative flex justify-center">
+          <div class="relative w-80 h-[380px] md:w-90 md:h-[420px] rounded-[48px] overflow-hidden shadow-2xl group border border-neutral-200 dark:border-neutral-800">
+            <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80" alt="Cyber Core Core Tech" class="w-full h-full object-cover" />
+            <div class="absolute bottom-6 left-6 right-6 z-20 bg-black/60 backdrop-blur-md px-5 py-4 rounded-3xl border border-white/10 flex items-center justify-between">
+              <div>
+                <h4 class="text-white text-sm font-bold">340+ Cyber Deployments</h4>
+                <p class="text-neutral-300 text-[9px] font-mono tracking-wider uppercase mt-0.5">Secure Networks Active</p>
+              </div>
+              <div class="flex gap-0.5">
+                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 flex flex-col gap-6">
+          <div>
+            <p class="text-xs font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-amber-500 animate-pulse"></i> About Me
+            </p>
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white leading-tight font-sans">Creative at the Core</h2>
+            <p class="text-sm md:text-base font-mono text-amber-600 font-bold uppercase tracking-wider mt-1">Designer, Digital Strategist, Problem-Solver.</p>
+          </div>
+
+          <div class="text-neutral-700 dark:text-neutral-300 font-sans space-y-4 text-sm md:text-base leading-relaxed">
+            <p>With 13 years of dedication to visual design, I integrate complex conceptual creativity with rapid, pragmatic problem-solving across web design, application interface engineering, and direct customer acquisition tactics based in Valletta, Malta.</p>
+            <p>I build systems that increase digital status, drive verified customer engagement, and enable high-fashion visual identities that survive in highly competitive modern landscapes. My impact is incomparable.</p>
+          </div>
+
+          <div class="flex flex-wrap gap-3 pt-2">
+            <button onclick="openModal('schedule')" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold px-5 py-3 rounded-2xl transition shadow-lg cursor-pointer">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+              <span>Schedule Call</span>
+            </button>
+            <button onclick="copyToClipboard('hello@blurr.design', 'copy-btn')" id="copy-btn" class="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 font-medium px-5 py-3 rounded-2xl border border-neutral-200 dark:border-neutral-800 transition cursor-pointer">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+              <span>Copy Email</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Infinely Scrolling Ticker Marquee -->
+      <div class="relative w-full mt-16 md:mt-24 border-y border-neutral-200/60 dark:border-neutral-850 py-6 overflow-hidden">
+        <div class="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-white dark:from-[#0a0a0a] to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-white dark:from-[#0a0a0a] to-transparent z-10 pointer-events-none"></div>
+
+        <div class="flex whitespace-nowrap overflow-hidden">
+          <div class="flex shrink-0 gap-12 text-xs md:text-sm font-mono tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-bold animate-marquee">
+            <span>13+ Years Experience</span>
+            <span class="text-amber-500">✦</span>
+            <span>600+ Projects Executed</span>
+            <span class="text-amber-500">✦</span>
+            <span>Based In Valletta, Malta</span>
+            <span class="text-amber-500">✦</span>
+            <span>100% Bespoke Designs Guaranteed</span>
+            <span class="text-amber-500">✦</span>
+            <span>Maltese Quality Code Standards</span>
+            <span class="text-amber-500">✦</span>
+          </div>
+          <div class="flex shrink-0 gap-12 text-xs md:text-sm font-mono tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-bold animate-marquee ml-12">
+            <span>13+ Years Experience</span>
+            <span class="text-amber-500">✦</span>
+            <span>600+ Projects Executed</span>
+            <span class="text-amber-500">✦</span>
+            <span>Based In Valletta, Malta</span>
+            <span class="text-amber-500">✦</span>
+            <span>100% Bespoke Designs Guaranteed</span>
+            <span class="text-amber-500">✦</span>
+            <span>Maltese Quality Code Standards</span>
+            <span class="text-amber-500">✦</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO / SELECTED SHOWCASE MESAIC -->
+  <section id="portfolio" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+        <div>
+          <p class="text-xs font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-2">
+            <i data-lucide="layers" class="w-4 h-4 text-amber-500"></i> Selected Works
+          </p>
+          <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white font-sans">A Studio Showcase</h2>
+        </div>
+      </div>
+
+      <!-- Portfolio Item Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Project 1 -->
+        <div onclick="openLightbox('TryHackMe Cyber Core', 'A highly advanced 3D render of an abstract cyber-security hub, featuring blue cyber-lattices and dynamic holographic user flows.', 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80')" class="group relative rounded-[40px] overflow-hidden bg-gradient-to-br from-neutral-900 to-amber-950/20 shadow-xl cursor-pointer h-[340px] flex flex-col justify-end p-6 md:p-8 transform transition-transform duration-500 hover:-translate-y-1">
+          <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" alt="Cyber security tech illustration" class="w-full h-full object-cover opacity-35 group-hover:opacity-60 transition-opacity duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+          </div>
+          <div class="relative z-10 flex flex-col gap-2 text-left">
+            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-400 bg-amber-400/15 w-fit px-2.5 py-0.5 rounded-full border border-amber-400/30">Websites</span>
+            <h3 class="text-2xl font-extrabold text-white mt-1 group-hover:text-amber-400 transition-colors">TryHackMe Cyber Core</h3>
+            <p class="text-sm text-neutral-300 leading-relaxed max-w-sm">Advanced system with scrolling security mesh grids & landing frameworks.</p>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div onclick="openLightbox('Alpha Guidelines', 'Corporate branding manual engineered for Swiss Alpha platforms with tailored grids and custom styling assets.', 'https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80')" class="group relative rounded-[40px] overflow-hidden bg-gradient-to-br from-neutral-900 to-amber-950/20 shadow-xl cursor-pointer h-[340px] flex flex-col justify-end p-6 md:p-8 transform transition-transform duration-500 hover:-translate-y-1">
+          <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80" alt="Brand identity" class="w-full h-full object-cover opacity-35 group-hover:opacity-60 transition-opacity duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+          </div>
+          <div class="relative z-10 flex flex-col gap-2 text-left">
+            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-400 bg-amber-400/15 w-fit px-2.5 py-0.5 rounded-full border border-amber-400/30">Brand Guidelines</span>
+            <h3 class="text-2xl font-extrabold text-white mt-1 group-hover:text-amber-400 transition-colors">Alpha Guidelines</h3>
+            <p class="text-sm text-neutral-300 leading-relaxed max-w-sm">Consolidated luxury typography scales and custom Maltese branding elements.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HONORS AND RECOGNITION -->
+  <section id="reviews" class="relative w-full py-16 md:py-24 bg-[#fafafa] dark:bg-neutral-900/40 px-4 md:px-12 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12">
+        <div>
+          <p class="text-xs font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-2">
+            <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> Hall of Fame
+          </p>
+          <h2 class="text-3xl md:text-4xl font-extrabold text-neutral-900 dark:text-white">Awards & Recognition</h2>
+        </div>
+      </div>
+
+      <div class="border border-neutral-200 dark:border-neutral-800 rounded-3xl bg-white dark:bg-neutral-950 overflow-hidden shadow-sm">
+        <div class="divide-y divide-neutral-105 dark:divide-neutral-900">
+          
+          <div class="grid grid-cols-1 md:grid-cols-12 items-center p-6 gap-2">
+            <div class="col-span-12 md:col-span-6 flex items-center gap-3">
+              <div class="p-2.5 bg-neutral-100 dark:bg-neutral-900 rounded-xl"><i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i></div>
+              <span class="text-base font-extrabold text-neutral-900 dark:text-white">WD Website Favorite</span>
+            </div>
+            <div class="col-span-12 md:col-span-4 text-sm text-neutral-500">WD Design Awards</div>
+            <div class="col-span-12 md:col-span-2 text-right text-xs font-mono text-neutral-400">April 2026</div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 items-center p-6 gap-2">
+            <div class="col-span-12 md:col-span-6 flex items-center gap-3">
+              <div class="p-2.5 bg-neutral-100 dark:bg-neutral-900 rounded-xl"><i data-lucide="crown" class="w-4 h-4 text-amber-500"></i></div>
+              <span class="text-base font-extrabold text-neutral-900 dark:text-white">Gold Project of the Day</span>
+            </div>
+            <div class="col-span-12 md:col-span-4 text-sm text-neutral-500">Astonishing Awards</div>
+            <div class="col-span-12 md:col-span-2 text-right text-xs font-mono text-neutral-400">March 2026</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLOATING NAVIGATION CAPSULE -->
+  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-fit px-4">
+    <nav class="bg-black/90 dark:bg-neutral-950/95 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 dark:border-neutral-800/80 flex items-center gap-5 sm:gap-7 shadow-2xl">
+      <a href="#home" class="p-1.5 rounded-full text-neutral-400 hover:text-white transition-colors"><i data-lucide="home" class="w-4 h-4"></i></a>
+      <a href="#skills" class="text-xs font-semibold uppercase text-neutral-400 hover:text-white transition-colors">Skills</a>
+      <a href="#about" class="text-xs font-semibold uppercase text-neutral-400 hover:text-white transition-colors">About</a>
+      <a href="#portfolio" class="text-xs font-semibold uppercase text-neutral-400 hover:text-white transition-colors flex items-center gap-1">Portfolio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+      <a href="#reviews" class="text-xs font-semibold uppercase text-neutral-400 hover:text-white transition-colors">Reviews</a>
+      <button onclick="openModal('contact')" class="bg-amber-500 hover:bg-amber-600 text-black text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full cursor-pointer">Contact me</button>
+    </nav>
+  </div>
+
+  <!-- FLOATING CHAT TRIGGER -->
+  <button onclick="toggleChat()" class="fixed bottom-6 right-6 z-40 flex items-center justify-center gap-2.5 bg-neutral-950 border border-neutral-850 text-white rounded-full px-5 py-3.5 shadow-2xl hover:bg-neutral-900 transition-all cursor-pointer">
+    <div class="relative">
+      <i data-lucide="message-square" class="w-5 h-5 text-amber-500"></i>
+      <span class="absolute -top-1.5 -right-1.5 flex h-2.5 w-2.5">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full bg-emerald-500 h-2.5 w-2.5"></span>
+      </span>
+    </div>
+    <span class="text-xs font-sans font-medium tracking-tight">Chat with Blurr AI</span>
+  </button>
+
+  <!-- CHAT WINDOW OVERLAY -->
+  <div id="chat-backdrop" class="hidden fixed inset-0 z-50 flex items-end justify-end p-4 md:p-6 pointer-events-none">
+    <div onclick="toggleChat()" class="absolute inset-0 bg-black/10 pointer-events-auto"></div>
+    <div class="relative w-full max-w-sm h-[500px] bg-neutral-950 border border-neutral-800 rounded-3xl shadow-2xl flex flex-col pointer-events-auto text-white">
+      <div class="flex items-center justify-between p-4 bg-neutral-900 border-b border-neutral-800 rounded-t-3xl">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 bg-amber-550 bg-amber-500 text-black rounded-full"><i data-lucide="bot" class="w-4 h-4"></i></div>
+          <div>
+            <h4 class="text-xs font-bold">Blurr Assistant</h4>
+            <p class="text-[9px] font-mono text-emerald-400 uppercase tracking-widest flex items-center gap-1">Live & Active</p>
+          </div>
+        </div>
+        <button onclick="toggleChat()" class="text-neutral-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="flex gap-2.5 max-w-[85%]">
+          <div class="p-2 bg-neutral-900 rounded-2xl h-8 w-8 flex items-center justify-center"><i data-lucide="bot" class="w-4 h-4 text-amber-500"></i></div>
+          <div class="bg-neutral-900 p-3 rounded-2xl rounded-tl-sm text-xs leading-relaxed text-left">
+            Hey! Ask me anything about Blurr's design systems, Malta integration, or work milestones!
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-neutral-900 border-t border-neutral-800 rounded-b-3xl flex items-center gap-2">
+        <input id="chat-input" type="text" placeholder="Query Blurr Core..." class="flex-1 bg-neutral-950 text-xs border border-neutral-800 rounded-2xl px-3 py-2.5 focus:outline-none focus:border-amber-500" onkeydown="if(event.key === 'Enter') handleChatInput()" />
+        <button onclick="handleChatInput()" class="bg-amber-500 hover:bg-amber-600 text-black p-2.5 rounded-2xl cursor-pointer"><i data-lucide="send" class="w-4 h-4"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT & SCHEDULE MODAL -->
+  <div id="contact-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div onclick="closeModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="relative w-full max-w-md bg-neutral-900 border border-neutral-800 p-6 rounded-3xl text-white shadow-2xl z-10">
+      <div class="flex justify-between items-center border-b border-rose-950/20 border-neutral-800 pb-4 mb-4">
+        <h3 id="modal-title" class="text-lg font-bold font-sans">Contact Blurr</h3>
+        <button onclick="closeModal()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="contact-form" onsubmit="submitContact(event)" class="space-y-4">
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Your Name</label>
+          <input required type="text" class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white" placeholder="Wade Warren" />
+        </div>
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Email Address</label>
+          <input required type="email" class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white" placeholder="wade@company.com" />
+        </div>
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Brief Details</label>
+          <textarea required rows="3" class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white" placeholder="How can we build together?"></textarea>
+        </div>
+        <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-xl text-xs uppercase tracking-wider transition">Send Briefing</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PORTFOLIO LIGHTBOX -->
+  <div id="lightbox" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div onclick="closeLightbox()" class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+    <div class="relative w-full max-w-lg bg-neutral-950 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl z-10">
+      <img id="lightbox-img" src="" alt="Detail Image" class="w-full h-56 object-cover" />
+      <div class="p-6 text-left text-white">
+        <h3 id="lightbox-title" class="text-xl font-extrabold font-sans">Project Title</h3>
+        <p id="lightbox-desc" class="text-neutral-400 text-xs leading-relaxed mt-2">Extended description details of this creative process showcase asset.</p>
+        <button onclick="closeLightbox()" class="mt-6 w-full py-2.5 bg-neutral-900 border border-neutral-800 text-xs font-semibold rounded-xl hover:bg-neutral-800">Close Window</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-neutral-950 border-t border-neutral-900 py-16 text-neutral-500 text-xs font-mono flex flex-col items-center gap-4">
+    <span class="flex items-center gap-2 text-white">
+      <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
+      <span class="font-extrabold font-sans text-sm tracking-widest text-neutral-200">BLURR.STUDIOS</span>
+    </span>
+    <p class="tracking-wide">Malta © 2026. ALL RIGHTS RESERVED IN BLURR MATRICES.</p>
+  </footer>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Live Clock for Europe/Malta Timezone
+    function updateClock() {
+      const now = new Date();
+      const options = {
+        timeZone: "Europe/Malta",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      };
+      const formatter = new Intl.DateTimeFormat("en-US", options);
+      document.getElementById("cet-clock").innerText = formatter.format(now) + " CET (GMT+1)";
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Dark/Light Mode Management (Persistent)
+    const themeBtn = document.getElementById("theme-btn");
+    const themeIcon = themeBtn.querySelector("i");
+    
+    // Default to dark mode for luxury cyber styling
+    document.documentElement.classList.add("dark");
+    themeBtn.addEventListener("click", () => {
+      const isDark = document.documentElement.classList.toggle("dark");
+      themeBtn.innerHTML = isDark ? '<i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>' : '<i data-lucide="moon" class="w-4 h-4 text-neutral-700"></i>';
+      lucide.createIcons();
+    });
+
+    // Sidebar Accordion Handler
+    function toggleAccordion(id) {
+      const content = document.getElementById(`content-${id}`);
+      const chevron = document.getElementById(`chevron-${id}`);
+      const card = document.getElementById(`accordion-${id}`);
+
+      const allContents = [1, 2, 3];
+      allContents.forEach(i => {
+        if (i !== id) {
+          document.getElementById(`content-${i}`).classList.add("hidden");
+          document.getElementById(`chevron-${i}`).style.transform = "rotate(0deg)";
+          document.getElementById(`accordion-${i}`).classList.remove("border-amber-500/40", "shadow-xl");
+        }
+      });
+
+      const isHidden = content.classList.toggle("hidden");
+      chevron.style.transform = isHidden ? "rotate(0deg)" : "rotate(180deg)";
+      if (!isHidden) {
+        card.classList.add("border-amber-500/40", "shadow-xl");
+      } else {
+        card.classList.remove("border-amber-500/40", "shadow-xl");
+      }
+    }
+    toggleAccordion(1); // Set first open of default
+
+    // Contact Modal Controller
+    const modal = document.getElementById("contact-modal");
+    const modalTitle = document.getElementById("modal-title");
+    function openModal(type = "contact") {
+      modal.classList.remove("hidden");
+      modalTitle.innerText = type === "schedule" ? "Schedule a discovery call" : "Launch a project together";
+    }
+    function closeModal() {
+      modal.classList.add("hidden");
+    }
+
+    // Portfolio Lightbox Controller
+    const lightbox = document.getElementById("lightbox");
+    function openLightbox(title, desc, img) {
+      document.getElementById("lightbox-title").innerText = title;
+      document.getElementById("lightbox-desc").innerText = desc;
+      document.getElementById("lightbox-img").src = img;
+      lightbox.classList.remove("hidden");
+    }
+    function closeLightbox() {
+      lightbox.classList.add("hidden");
+    }
+
+    // Success brief form submission callback
+    function submitContact(e) {
+      e.preventDefault();
+      alert("Submission received! Thanks for reaching out. Blurr typically responds within 4 hours CET.");
+      closeModal();
+      document.getElementById("contact-form").reset();
+    }
+
+    // Chatbot Client Curation
+    const chatOverlay = document.getElementById("chat-backdrop");
+    function toggleChat() {
+      chatOverlay.classList.toggle("hidden");
+    }
+
+    const messagesBox = document.getElementById("chat-messages");
+    function handleChatInput() {
+      const input = document.getElementById("chat-input");
+      const text = input.value.trim();
+      if (!text) return;
+
+      // User Message Output
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      messagesBox.innerHTML += `
+        <div class="flex gap-2.5 max-w-[85%] ml-auto text-right flex-row-reverse">
+          <div class="p-2 bg-neutral-800 rounded-2xl h-8 w-8 flex items-center justify-center shrink-0"><i data-lucide="user" class="w-4 h-4 text-neutral-300"></i></div>
+          <div class="bg-amber-550 bg-amber-500 text-black text-xs font-medium p-3 rounded-2xl rounded-tr-sm text-left">
+            ${text}
+          </div>
+        </div>
+      `;
+      input.value = "";
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+      lucide.createIcons();
+
+      // Bot simulation response
+      setTimeout(() => {
+        let responseText = "Understood. Our cybernetic framework accepts custom design integrations. Send us an email direct or schedule a discovery call to synchronize milestones.";
+        if (text.toLowerCase().includes("philosoph") || text.toLowerCase().includes("design")) {
+          responseText = "Our design guidelines discard cookie-cutter templates. We prioritize custom typography ratios, high negative space, and absolute digital status.";
+        } else if (text.toLowerCase().includes("service") || text.toLowerCase().includes("do")) {
+          responseText = "We operate across high-fidelity React Single Page Apps, custom UI/UX, product guidelines vectors, and cinematic visual assets.";
+        }
+        
+        messagesBox.innerHTML += `
+          <div class="flex gap-2.5 max-w-[85%] mr-auto text-left">
+            <div class="p-2 bg-neutral-900 rounded-2xl h-8 w-8 flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-4 h-4 text-amber-500"></i></div>
+            <div class="bg-neutral-900 p-3 rounded-2xl rounded-tl-sm text-xs leading-relaxed text-left">
+              ${responseText}
+            </div>
+          </div>
+        `;
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+        lucide.createIcons();
+      }, 750);
+    }
+
+    // Copy clip board helper
+    function copyToClipboard(val, elementId) {
+      navigator.clipboard.writeText(val);
+      const btn = document.getElementById(elementId);
+      const prevText = btn.innerHTML;
+      btn.innerHTML = '<span>Email Copied!</span>';
+      setTimeout(() => btn.innerHTML = prevText, 2000);
+    }
+  </script>
+</body>
+</html>

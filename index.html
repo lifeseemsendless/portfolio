@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nikola Radeski — Blurr Studios</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLURR.STUDIOS | Malta Creative Tech Core</title>
   
-  <!-- Styling & Typographic Scales -->
+  <!-- Typography & Styling CDNs -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Alpine.js to drive high-fidelity micro-interactions and transitions state -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -16,27 +28,17 @@
             sans: ['Inter', 'Space Grotesk', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
           },
-          colors: {
-            amber: {
-              500: '#f59e0b',
-              600: '#d97706',
-            }
+          animation: {
+            'spin-slow': 'spin 30s linear infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           }
         }
       }
     }
   </script>
-  
-  <!-- Premium Font Imports -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Browser Icons Library -->
-  <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* Continuous horizontal ticker */
+    /* Continuous Marquee Animation */
     @keyframes marquee {
       0% { transform: translateX(0%); }
       100% { transform: translateX(-50%); }
@@ -45,7 +47,16 @@
       display: flex;
       animation: marquee 35s linear infinite;
     }
-    /* Webkit scrollbars styling */
+    /* Simple Ambient Glowing Background styles */
+    .bg-grid-cyber {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(251, 191, 36, 0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(251, 191, 36, 0.03) 1px, transparent 1px);
+    }
+    .dark .bg-grid-cyber {
+      background-image: linear-gradient(to right, rgba(251, 191, 36, 0.04) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(251, 191, 36, 0.04) 1px, transparent 1px);
+    }
     ::-webkit-scrollbar {
       width: 8px;
     }
@@ -53,336 +64,435 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: #262626;
+      background: #333333;
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #f59e0b;
+      background: #ffb020;
     }
   </style>
 </head>
-<body class="bg-[#fafafa] text-neutral-900 dark:bg-[#0a0a0a] dark:text-neutral-100 transition-colors duration-500 font-sans selection:bg-amber-500 selection:text-black">
+<body 
+  x-data="{ 
+    darkMode: false, 
+    activeSection: 'home',
+    isContactOpen: false,
+    modalType: 'contact',
+    selectedProject: null,
+    isChatOpen: false,
+    chatbotInput: '',
+    chatbotMessages: [
+      { sender: 'bot', text: 'Hey! I am Blurr’s custom-trained AI assistant. Ask me anything about my background, Malta studio services, or how we can build something unforgettable together!', timestamp: '06:00 AM' }
+    ],
+    chatbotSuggestions: [
+      'What is your design philosophy?',
+      'What services do you perform?',
+      'Tell me about your experience',
+      'How can we schedule a consultation?'
+    ],
+    isChatLoading: false,
+    toggleTheme() {
+      this.darkMode = !this.darkMode;
+      localStorage.setItem('dark-mode', this.darkMode);
+    },
+    triggerModal(type) {
+      this.modalType = type;
+      this.isContactOpen = true;
+    },
+    openProjectLightbox(title, category, img, desc, tags) {
+      this.selectedProject = { title, category, img, desc, tags };
+    },
+    async sendChatMessage(text) {
+      if (!text.trim() || this.isChatLoading) return;
+      this.chatbotMessages.push({ sender: 'user', text: text, timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+      this.chatbotInput = '';
+      this.isChatLoading = true;
+      
+      // Simulate client-side creative responses for static single file hosting
+      setTimeout(() => {
+        let reply = 'Our Malta studio focuses on custom premium UI/UX, database migrations, and high conversion landing portfolios using React, TailwindCSS, and fluid transitions animations. Let’s collaborate!';
+        if (text.toLowerCase().includes('philosophy')) {
+          reply = 'Our philosophy is Creative at the Core—eliminating flat generic templates, using bold displays, robust layouts, and meticulous typography pairing.';
+        } else if (text.toLowerCase().includes('experience') || text.toLowerCase().includes('career')) {
+          reply = 'Our founder features 13 years of executive tenure maintaining over 24 custom git repositories, with recent milestones in Malta, Zurich, and security firms globally.';
+        } else if (text.toLowerCase().includes('schedule') || text.toLowerCase().includes('call')) {
+          reply = 'Directly click the “Schedule a Call” button in the navigation bar to select your slot immediately with our Valletta team!';
+        }
+        this.chatbotMessages.push({ sender: 'bot', text: reply, timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+        this.isChatLoading = false;
+        this.$nextTick(() => {
+          const arena = document.getElementById('chat-arena');
+          if (arena) arena.scrollTop = arena.scrollHeight;
+        });
+      }, 1100);
+    },
+    // Track site scroll anchors dynamically
+    trackScroll() {
+      const scrollPos = window.scrollY + 350;
+      const sections = [
+        { id: 'home', el: document.getElementById('hero-section') },
+        { id: 'skills', el: document.getElementById('services-section') },
+        { id: 'about', el: document.getElementById('about-section') },
+        { id: 'portfolio', el: document.getElementById('portfolio-section') },
+        { id: 'reviews', el: document.getElementById('awards-section') }
+      ];
+      for (const section of sections) {
+        if (section.el) {
+          const top = section.el.offsetTop;
+          const height = section.el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            this.activeSection = section.id;
+            break;
+          }
+        }
+      }
+    }
+  }"
+  x-init="
+    darkMode = localStorage.getItem('dark-mode') === 'true';
+    window.addEventListener('scroll', () => trackScroll());
+  "
+  :class="darkMode ? 'dark bg-neutral-950 text-neutral-100' : 'bg-[#fafafa] text-neutral-900'"
+  class="font-sans transition-colors duration-500 min-h-screen"
+>
 
-  <!-- THEME TOGGLER FLOATER -->
+  <!-- BACKGROUND GRID EFFECT -->
+  <div class="fixed inset-0 pointer-events-none bg-grid-cyber z-0"></div>
+
+  <!-- THEME TOGGLE SWITCH -->
   <div class="fixed top-24 right-4 md:right-8 z-40">
-    <button id="theme-btn" class="p-3 rounded-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200 shadow-xl hover:border-amber-500 hover:text-amber-500 transition-all duration-300 cursor-pointer">
-      <i data-lucide="moon" class="w-4 h-4"></i>
+    <button
+      @click="toggleTheme()"
+      id="theme-toggler"
+      class="p-3 rounded-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200 shadow-lg hover:border-amber-500 hover:text-amber-500 transition-all duration-300 cursor-pointer"
+      aria-label="Toggle DarkMode"
+    >
+      <i data-lucide="sun" class="w-4 h-4 text-amber-500 block dark:hidden"></i>
+      <i data-lucide="moon" class="w-4 h-4 text-amber-400 hidden dark:block"></i>
     </button>
   </div>
 
   <!-- HERO SECTION -->
-  <section id="home" class="relative w-full min-h-screen flex flex-col justify-between overflow-hidden px-4 md:px-12 py-8 select-none border-b border-neutral-100 dark:border-neutral-900">
-    <!-- Honeycomb 3D Grid Overlay -->
-    <div class="absolute inset-0 z-0 opacity-10 dark:opacity-[0.03] pointer-events-none bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80');"></div>
-    
-    <div class="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-
-    <!-- Top Navigation Header -->
-    <div class="relative z-10 w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-neutral-200/50 dark:border-neutral-800/40 pb-6">
-      <div class="flex items-center gap-3">
-        <div class="h-10 w-10 bg-black dark:bg-white rounded-xl flex items-center justify-center text-white dark:text-black font-mono font-bold text-lg shadow-md">
-          B
-        </div>
-        <div>
-          <h1 class="text-base font-extrabold tracking-widest text-neutral-900 dark:text-white uppercase leading-none font-sans">BLURR.</h1>
-          <p class="text-[9px] font-mono text-neutral-500 tracking-wider uppercase mt-1">Creative Direction Studio</p>
-        </div>
+  <section id="hero-section" class="relative z-10 w-full min-h-screen flex flex-col justify-between px-4 md:px-12 py-8 bg-transparent max-w-7xl mx-auto">
+    <!-- Header Area -->
+    <div class="flex justify-between items-center w-full z-20">
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 rounded-full bg-amber-500 animate-ping"></span>
+        <span class="text-sm font-mono uppercase tracking-widest font-bold">BLURR.SYSTEMS</span>
       </div>
-
-      <div class="flex items-center gap-6">
-        <div class="flex items-center gap-2">
-          <span class="flex h-2.5 w-2.5 relative">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-          </span>
-          <span class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Available for Malta Contracts</span>
-        </div>
-        <div class="hidden md:flex items-center gap-2 border-l border-neutral-300 dark:border-neutral-850 pl-6">
-          <i data-lucide="map-pin" class="w-4 h-4 text-neutral-400"></i>
-          <span class="text-xs text-neutral-600 dark:text-neutral-400 font-sans">Valletta, Malta</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Core Layout Showcase -->
-    <div class="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-6 py-12">
-      <div class="lg:col-span-4 flex flex-col justify-center text-left pointer-events-none">
-        <div class="mb-2 flex items-center gap-2">
-          <i data-lucide="award" class="w-5 h-5 text-amber-500"></i>
-          <span class="text-xs font-mono font-semibold tracking-widest text-amber-600 uppercase">Award Winning Designer</span>
-        </div>
-        <h2 id="first-title" class="text-6xl md:text-8xl xl:text-9xl font-extrabold tracking-tighter text-neutral-950 dark:text-white leading-none transition-transform duration-300 hover:scale-[1.01] hover:text-amber-500">BLURR</h2>
-      </div>
-
-      <!-- Tech Cybernetic Core Centerpiece -->
-      <div class="lg:col-span-4 flex justify-center items-center py-6">
-        <div id="portrait-card" class="relative w-72 h-96 md:w-80 md:h-[420px] rounded-[48px] overflow-hidden bg-neutral-900 shadow-2xl border border-white/15 dark:border-neutral-800 pointer-events-auto transform transition-all duration-500 hover:scale-[1.03] group">
-          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent z-10"></div>
-          <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80" alt="Cyber Glass Core Abstract" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-          
-          <div class="absolute bottom-6 left-6 right-6 z-20 flex flex-col gap-1.5 text-left">
-            <span class="bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 w-fit text-[10px] font-mono text-neutral-200 flex items-center gap-1.5 mb-1">
-              <i data-lucide="flame" class="w-3.5 h-3.5 text-amber-500 fill-amber-500 animate-pulse"></i> Cyber System Interface
-            </span>
-            <h3 class="text-xl md:text-2xl font-bold font-sans text-white tracking-tight">Blurr Systems™</h3>
-            <p class="text-xs text-neutral-350 text-neutral-350 font-light text-neutral-300">Engineering advanced futuristic digital spaces.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="lg:col-span-4 flex flex-col justify-center text-left lg:text-right pointer-events-none">
-        <div class="mb-2 lg:ml-auto flex items-center gap-2">
-          <span class="text-xs font-mono font-semibold tracking-widest text-neutral-500 uppercase">Designer & Founder</span>
-          <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
-        </div>
-        <h2 id="second-title" class="text-6xl md:text-8xl xl:text-9xl font-extrabold tracking-tighter text-neutral-950 dark:text-white leading-none transition-transform duration-300 hover:scale-[1.01] hover:text-amber-500">STUDIO</h2>
-      </div>
-    </div>
-
-    <!-- Bottom Status Bar -->
-    <div class="relative z-10 w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-t border-neutral-200/50 dark:border-neutral-800/40 pt-6">
-      <div>
-        <p class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest mb-1">HQ VALLETTA, MALTA</p>
-        <div class="flex items-center gap-2 text-neutral-800 dark:text-neutral-300">
-          <i data-lucide="clock" class="w-4 h-4 text-amber-500 animate-spin" style="animation-duration: 8s;"></i>
-          <span id="cet-clock" class="text-sm font-semibold font-mono tracking-tight text-neutral-900 dark:text-white">CET Clock Syncing...</span>
-        </div>
-      </div>
-      <button onclick="openModal('schedule')" class="group flex items-center gap-2 bg-neutral-950 dark:bg-white text-white dark:text-black font-semibold font-sans px-6 py-3.5 rounded-2xl hover:bg-amber-500 hover:text-black dark:hover:bg-amber-500 dark:hover:text-black shadow-xl transition-all duration-300">
-        <span>Book Collaboration</span>
-        <i data-lucide="arrow-down-right" class="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5"></i>
-      </button>
-    </div>
-  </section>
-
-  <!-- REVOLUTIONARY MICRO SERVICES / SKILLS -->
-  <section id="skills" class="relative w-full py-16 md:py-24 bg-[#f4f4f4] dark:bg-neutral-900/60 px-4 md:px-12 border-b border-neutral-200 dark:border-neutral-800">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
       
-      <div class="lg:col-span-4 lg:sticky lg:top-24 flex flex-col gap-8">
-        <div>
-          <p class="text-xs font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Capabilities
-          </p>
-          <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-neutral-950 dark:text-white leading-tight">What do I best?</h2>
-          <p class="text-neutral-600 dark:text-neutral-300 font-sans mt-4 leading-relaxed text-sm md:text-base">I shape digital empires, custom frameworks, interactive storytelling models, and high-conversion assets designed directly inside Valletta, Malta.</p>
-        </div>
-
-        <!-- Sidebar mini visual core card -->
-        <div class="hidden lg:block rounded-3xl bg-[#fafafa] dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-850 p-5 shadow-lg">
-          <div class="relative w-full h-[220px] rounded-2xl overflow-hidden mb-4">
-            <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=600&q=80" alt="Core Cyber Image" class="w-full h-full object-cover" />
-          </div>
-          <h4 class="text-base font-extrabold text-neutral-900 dark:text-white leading-tight">Blurr Systems</h4>
-          <p class="text-[11px] font-mono text-neutral-400 mt-1">High-Precision Automation Node</p>
-        </div>
-      </div>
-
-      <!-- Skills Accordion Loop -->
-      <div class="lg:col-span-8 flex flex-col gap-4">
-        
-        <!-- Accordion Item 01 -->
-        <div class="rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 transition-all duration-300 relative overflow-hidden" id="accordion-1">
-          <button onclick="toggleAccordion(1)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none">
-            <div class="flex items-center gap-4">
-              <span class="text-sm font-mono text-neutral-400 font-bold">01</span>
-              <div class="p-2 relative rounded-2xl bg-neutral-100 dark:bg-neutral-900">
-                <i data-lucide="code" class="w-5 h-5 text-amber-500"></i>
-              </div>
-              <div>
-                <span class="text-[9px] font-mono font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">Top Performing</span>
-                <h3 class="text-lg md:text-xl font-extrabold text-neutral-900 dark:text-white mt-1">Web Design</h3>
-              </div>
-            </div>
-            <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 transition-transform duration-300" id="chevron-1"></i>
-          </button>
-          <div id="content-1" class="hidden px-6 pb-6 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-700 dark:text-neutral-300">
-            <p class="text-sm md:text-base leading-relaxed mb-6">I design no-code websites and bespoke native experiences that are fully responsive, mobile-ready, and highly polished. Each site is custom crafted for lightning-speed performance, optimal SEO structures, and dynamic visual storytelling.</p>
-            <div class="flex flex-wrap gap-2">
-              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">React.JS</span>
-              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">TailwindCSS</span>
-              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Framer Motion</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Accordion Item 02 -->
-        <div class="rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 transition-all duration-300 relative overflow-hidden" id="accordion-2">
-          <button onclick="toggleAccordion(2)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none">
-            <div class="flex items-center gap-4">
-              <span class="text-sm font-mono text-neutral-400 font-bold">02</span>
-              <div class="p-2 relative rounded-2xl bg-neutral-100 dark:bg-neutral-900">
-                <i data-lucide="layout-grid" class="w-5 h-5 text-amber-500"></i>
-              </div>
-              <div>
-                <span class="text-[9px] font-mono font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">MVP Launchpad</span>
-                <h3 class="text-lg md:text-xl font-extrabold text-neutral-900 dark:text-white mt-1">Product Design</h3>
-              </div>
-            </div>
-            <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 transition-transform duration-300" id="chevron-2"></i>
-          </button>
-          <div id="content-2" class="hidden px-6 pb-6 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-700 dark:text-neutral-300">
-            <p class="text-sm md:text-base leading-relaxed mb-6">I build interface ideas from conceptual layout to live go-to-market products. I assist startups with MVP mapping, pitch presentation decks, brand identity layouts, and investor collaterals.</p>
-            <div class="flex flex-wrap gap-2">
-              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Wireframes</span>
-              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Startups Strategy</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Accordion Item 03 -->
-        <div class="rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 transition-all duration-300 relative overflow-hidden" id="accordion-3">
-          <button onclick="toggleAccordion(3)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none">
-            <div class="flex items-center gap-4">
-              <span class="text-sm font-mono text-neutral-400 font-bold">03</span>
-              <div class="p-2 relative rounded-2xl bg-neutral-100 dark:bg-neutral-900">
-                <i data-lucide="database" class="w-5 h-5 text-amber-500"></i>
-              </div>
-              <div>
-                <span class="text-[9px] font-mono font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">Future Core</span>
-                <h3 class="text-lg md:text-xl font-extrabold text-neutral-900 dark:text-white mt-1">Advanced Systems</h3>
-              </div>
-            </div>
-            <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 transition-transform duration-300" id="chevron-3"></i>
-          </button>
-          <div id="content-3" class="hidden px-6 pb-6 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-700 dark:text-neutral-300">
-            <p class="text-sm md:text-base leading-relaxed mb-6">Designing and deploying advanced, automated digital assets powered by next-generation web tools and serverless architectures tailored to maintain state across high-end network layers.</p>
-            <div class="flex flex-wrap gap-2">
-              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Express API</span>
-              <span class="text-xs font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800">Serverless</span>
-            </div>
-          </div>
-        </div>
-
+      <div class="hidden md:flex items-center gap-2 border-l border-neutral-300 dark:border-neutral-800 pl-6">
+        <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i>
+        <span class="text-xs font-sans text-neutral-600 dark:text-neutral-400">Valletta, Malta</span>
       </div>
     </div>
-  </section>
 
-  <!-- ABOUT / PROFILE BIOGRAPHY -->
-  <section id="about" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 select-none overflow-hidden">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <!-- Central Hero core split -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-auto pt-12 pb-8">
+      <!-- Title elements -->
+      <div class="space-y-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 rounded-full border border-amber-500/20 text-xs font-mono text-amber-600 dark:text-amber-400">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>MALTA HEADQUARTERS ACTIVE</span>
+        </div>
+        <h1 class="text-5xl md:text-7xl font-extrabold font-sans leading-none tracking-tighter">
+          ADVANCED <br>
+          <span class="text-amber-500">FUTURISTIC</span> <br>
+          DIGITAL SPACES
+        </h1>
+        <p class="text-base text-neutral-500 dark:text-neutral-400 max-w-md font-sans leading-relaxed">
+          Bespoke high-fidelity interface layouts, security models, custom components, and visual digital prestige engineered directly out of Valletta.
+        </p>
         
-        <div class="lg:col-span-5 relative flex justify-center">
-          <div class="relative w-80 h-[380px] md:w-90 md:h-[420px] rounded-[48px] overflow-hidden shadow-2xl group border border-neutral-200 dark:border-neutral-800">
-            <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80" alt="Cyber Core Core Tech" class="w-full h-full object-cover" />
-            <div class="absolute bottom-6 left-6 right-6 z-20 bg-black/60 backdrop-blur-md px-5 py-4 rounded-3xl border border-white/10 flex items-center justify-between">
-              <div>
-                <h4 class="text-white text-sm font-bold">340+ Cyber Deployments</h4>
-                <p class="text-neutral-300 text-[9px] font-mono tracking-wider uppercase mt-0.5">Secure Networks Active</p>
-              </div>
-              <div class="flex gap-0.5">
-                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
-                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
-                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
-                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
-                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
-              </div>
-            </div>
-          </div>
+        <!-- Active CTA actions with clean transitions -->
+        <div class="flex flex-wrap gap-4 pt-4">
+          <button @click="triggerModal('contact')" class="px-6 py-3.5 bg-amber-550 bg-amber-500 text-black font-semibold rounded-2xl hover:bg-amber-600 hover:scale-[1.02] shadow-xl shadow-amber-500/15 duration-300 transition-all flex items-center gap-2 cursor-pointer">
+            <span>Collaborate Securely</span>
+            <i data-lucide="arrow-down-right" class="w-4 h-4"></i>
+          </button>
+          
+          <button @click="triggerModal('schedule')" class="px-6 py-3.5 bg-neutral-900 text-white dark:bg-white dark:text-black font-semibold rounded-2xl hover:opacity-85 hover:scale-[1.02] duration-300 transition-all cursor-pointer">
+            Schedule Discovery
+          </button>
         </div>
-
-        <div class="lg:col-span-7 flex flex-col gap-6">
-          <div>
-            <p class="text-xs font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-2">
-              <i data-lucide="sparkles" class="w-4 h-4 text-amber-500 animate-pulse"></i> About Me
-            </p>
-            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white leading-tight font-sans">Creative at the Core</h2>
-            <p class="text-sm md:text-base font-mono text-amber-600 font-bold uppercase tracking-wider mt-1">Designer, Digital Strategist, Problem-Solver.</p>
-          </div>
-
-          <div class="text-neutral-700 dark:text-neutral-300 font-sans space-y-4 text-sm md:text-base leading-relaxed">
-            <p>With 13 years of dedication to visual design, I integrate complex conceptual creativity with rapid, pragmatic problem-solving across web design, application interface engineering, and direct customer acquisition tactics based in Valletta, Malta.</p>
-            <p>I build systems that increase digital status, drive verified customer engagement, and enable high-fashion visual identities that survive in highly competitive modern landscapes. My impact is incomparable.</p>
-          </div>
-
-          <div class="flex flex-wrap gap-3 pt-2">
-            <button onclick="openModal('schedule')" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold px-5 py-3 rounded-2xl transition shadow-lg cursor-pointer">
-              <i data-lucide="calendar" class="w-4 h-4"></i>
-              <span>Schedule Call</span>
-            </button>
-            <button onclick="copyToClipboard('hello@blurr.design', 'copy-btn')" id="copy-btn" class="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 font-medium px-5 py-3 rounded-2xl border border-neutral-200 dark:border-neutral-800 transition cursor-pointer">
-              <i data-lucide="mail" class="w-4 h-4"></i>
-              <span>Copy Email</span>
-            </button>
-          </div>
-        </div>
-
       </div>
 
-      <!-- Infinely Scrolling Ticker Marquee -->
-      <div class="relative w-full mt-16 md:mt-24 border-y border-neutral-200/60 dark:border-neutral-850 py-6 overflow-hidden">
-        <div class="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-white dark:from-[#0a0a0a] to-transparent z-10 pointer-events-none"></div>
-        <div class="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-white dark:from-[#0a0a0a] to-transparent z-10 pointer-events-none"></div>
+      <!-- Advanced Cyber Core Representation instead of user photo (Women removed) -->
+      <div class="relative flex justify-center group">
+        <!-- Pulse Glow Outer Circle -->
+        <div class="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-[48px] blur-3xl opacity-20 group-hover:opacity-35 transition-all duration-1000 animate-pulse-slow"></div>
+        <div class="relative w-80 h-[380px] md:w-[420px] md:h-[500px] rounded-[48px] overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-2xl bg-black">
+          <img 
+            src="https://ais-dev-ppgz6wlmd4rezknqssw6qa-760246716225.asia-southeast1.run.app/src/assets/images/cyber_tech_core_1781269848111.jpg" 
+            alt="Blurr Creative Cyber Tech Core Platform" 
+            class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+            onerror="this.src='https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1200&q=80'"
+          >
+          <!-- Floating Status Overlay -->
+          <div class="absolute bottom-6 left-6 right-6 z-20 flex flex-col gap-2 bg-neutral-950/80 backdrop-blur-md p-5 rounded-3xl border border-white/10">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+              <span class="text-[10px] font-mono text-emerald-400 font-semibold tracking-widest uppercase">CYBER NET INTERFACE ONLINE</span>
+            </div>
+            <h3 class="text-xl font-bold text-white tracking-tight leading-tight">Blurr Systems™</h3>
+            <p class="text-xs text-neutral-350 text-neutral-400">Valletta node active & transmitting securely.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <div class="flex whitespace-nowrap overflow-hidden">
-          <div class="flex shrink-0 gap-12 text-xs md:text-sm font-mono tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-bold animate-marquee">
-            <span>13+ Years Experience</span>
-            <span class="text-amber-500">✦</span>
-            <span>600+ Projects Executed</span>
-            <span class="text-amber-500">✦</span>
-            <span>Based In Valletta, Malta</span>
-            <span class="text-amber-500">✦</span>
-            <span>100% Bespoke Designs Guaranteed</span>
-            <span class="text-amber-500">✦</span>
-            <span>Maltese Quality Code Standards</span>
-            <span class="text-amber-500">✦</span>
-          </div>
-          <div class="flex shrink-0 gap-12 text-xs md:text-sm font-mono tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-bold animate-marquee ml-12">
-            <span>13+ Years Experience</span>
-            <span class="text-amber-500">✦</span>
-            <span>600+ Projects Executed</span>
-            <span class="text-amber-500">✦</span>
-            <span>Based In Valletta, Malta</span>
-            <span class="text-amber-500">✦</span>
-            <span>100% Bespoke Designs Guaranteed</span>
-            <span class="text-amber-500">✦</span>
-            <span>Maltese Quality Code Standards</span>
-            <span class="text-amber-500">✦</span>
-          </div>
+    <!-- Active dynamic Malta Local Clock area -->
+    <div class="relative z-10 w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-t border-neutral-200/50 dark:border-neutral-800/40 pt-6">
+      <div class="flex flex-col gap-1.5">
+        <p class="text-xs text-neutral-400 font-mono uppercase tracking-widest">Based In Valletta, Malta</p>
+        <div class="flex items-center gap-2 text-neutral-800 dark:text-neutral-300">
+          <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i>
+          <span class="font-mono text-sm tracking-widest font-bold" x-data="{ time: '' }" x-init="
+            const update = () => {
+              const options = { timeZone: 'Europe/Malta', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+              time = new Intl.DateTimeFormat('en-GB', options).format(new Date()) + ' (GMT+2)';
+            };
+            update();
+            setInterval(update, 1000);
+          " x-text="time"></span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PORTFOLIO / SELECTED SHOWCASE MESAIC -->
-  <section id="portfolio" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 border-b border-neutral-200 dark:border-neutral-800">
-    <div class="max-w-7xl mx-auto">
+  <!-- SERVICES / POP-UP TRANSITION TABS -->
+  <section id="services-section" class="relative w-full py-16 md:py-24 bg-[#fafafa] dark:bg-neutral-900/10 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
+    <div class="max-w-7xl mx-auto" x-data="{ activeTab: null }">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
         <div>
-          <p class="text-xs font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-2">
-            <i data-lucide="layers" class="w-4 h-4 text-amber-500"></i> Selected Works
+          <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
+            <i data-lucide="palette" class="text-amber-500"></i> Studio Operations
           </p>
-          <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white font-sans">A Studio Showcase</h2>
+          <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight">Core System Capabilities</h2>
+        </div>
+        <p class="text-sm text-neutral-500 max-w-sm">
+          Click on any system architecture tab below to experience active micro-transitions and details structure expansion.
+        </p>
+      </div>
+
+      <!-- Expandable Accordion with Beautiful pop up scroll animations -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-8 space-y-4">
+          
+          <!-- SERVICE TAB 1 -->
+          <div 
+            class="rounded-3xl border transition-all duration-300 overflow-hidden relative"
+            :class="activeTab === 1 ? 'bg-white dark:bg-neutral-950 shadow-2xl border-amber-500/40 scale-[1.01]' : 'bg-white/50 dark:bg-neutral-900/30 dark:hover:bg-neutral-900 border-neutral-200 dark:border-neutral-800'"
+          >
+            <div x-show="activeTab === 1" class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-amber-600"></div>
+            <button @click="activeTab = (activeTab === 1 ? null : 1)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none cursor-pointer group">
+              <div class="flex items-center gap-6">
+                <span class="text-sm font-mono text-neutral-400 font-bold">01</span>
+                <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500">
+                  <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl md:text-2xl font-extrabold group-hover:text-amber-500 transition-colors">Futuristic Web Design Layouts</h3>
+                </div>
+              </div>
+              <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300" :class="activeTab === 1 ? 'rotate-180' : ''"></i>
+            </button>
+            <div x-show="activeTab === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-screen" class="px-6 pb-8 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-600 dark:text-neutral-300">
+              <p class="leading-relaxed mb-6">
+                Designing ultra-modern landing layouts, interactive digital grids, luxury user experience guides, and custom front-end assemblies tailored to stand out on ultra-wide desktop monitors in Valletta node active matrixes.
+              </p>
+              <div class="flex flex-col gap-2">
+                <h4 class="text-xs font-mono font-bold text-neutral-400">Framework tools & pipelines:</h4>
+                <div class="flex flex-wrap gap-2 pt-1"><span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Framer Components</span><span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Tailwind Design Pack</span><span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Figma Vectors Mapping</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SERVICE TAB 2 -->
+          <div 
+            class="rounded-3xl border transition-all duration-300 overflow-hidden relative"
+            :class="activeTab === 2 ? 'bg-white dark:bg-neutral-950 shadow-2xl border-amber-500/40 scale-[1.01]' : 'bg-white/50 dark:bg-neutral-900/30 dark:hover:bg-neutral-900 border-neutral-200 dark:border-neutral-800'"
+          >
+            <div x-show="activeTab === 2" class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-amber-600"></div>
+            <button @click="activeTab = (activeTab === 2 ? null : 2)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none cursor-pointer group">
+              <div class="flex items-center gap-6">
+                <span class="text-sm font-mono text-neutral-400 font-bold">02</span>
+                <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500">
+                  <i data-lucide="code" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl md:text-2xl font-extrabold group-hover:text-amber-500 transition-colors">Interface Architecture Engineering</h3>
+                </div>
+              </div>
+              <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300" :class="activeTab === 2 ? 'rotate-180' : ''"></i>
+            </button>
+            <div x-show="activeTab === 2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-screen" class="px-6 pb-8 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-600 dark:text-neutral-300">
+              <p class="leading-relaxed mb-6">
+                Converting elaborate digital aesthetics into bulletproof, responsive React applications. Handcrafted clean custom hooks, stabilized states, and optimized code splitting without unrequested bloating modules.
+              </p>
+              <div class="flex flex-col gap-2">
+                <h4 class="text-xs font-mono font-bold text-neutral-400">Framework tools & pipelines:</h4>
+                <div class="flex flex-wrap gap-2 pt-1"><span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">TypeScript Safe Mode</span><span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">React Vite Pipelines</span><span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Micro Interactions CSS</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SERVICE TAB 3 -->
+          <div 
+            class="rounded-3xl border transition-all duration-300 overflow-hidden relative"
+            :class="activeTab === 3 ? 'bg-white dark:bg-neutral-950 shadow-2xl border-amber-500/40 scale-[1.01]' : 'bg-white/50 dark:bg-neutral-900/30 dark:hover:bg-neutral-900 border-neutral-200 dark:border-neutral-800'"
+          >
+            <div x-show="activeTab === 3" class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-amber-600"></div>
+            <button @click="activeTab = (activeTab === 3 ? null : 3)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none cursor-pointer group">
+              <div class="flex items-center gap-6">
+                <span class="text-sm font-mono text-neutral-400 font-bold">03</span>
+                <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500">
+                  <i data-lucide="database" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl md:text-2xl font-extrabold group-hover:text-amber-500 transition-colors">Digital Branding & Secure Data Matrices</h3>
+                </div>
+              </div>
+              <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300" :class="activeTab === 3 ? 'rotate-180' : ''"></i>
+            </button>
+            <div x-show="activeTab === 3" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-screen" class="px-6 pb-8 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-600 dark:text-neutral-300">
+              <p class="leading-relaxed mb-6">
+                Constructing comprehensive typography grids, custom brand assets collections, offline vector brand books, and integrated database structures containing secure parameters.
+              </p>
+              <div class="flex flex-col gap-2">
+                <h4 class="text-xs font-mono font-bold text-neutral-400">Framework tools & pipelines:</h4>
+                <div class="flex flex-wrap gap-2 pt-1"><span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Prisma ORM Secure Mode</span><span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Vector Scaling Grids</span><span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Security Rules Matrices</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Left Mini Grid info displaying active imagery -->
+        <div class="lg:col-span-4 space-y-6">
+          <div class="rounded-[36px] bg-[#121212] border border-neutral-800 p-6 text-white text-center flex flex-col justify-between h-[360px]">
+            <div class="relative w-full h-[180px] rounded-2xl overflow-hidden">
+              <img 
+                src="https://ais-dev-ppgz6wlmd4rezknqssw6qa-760246716225.asia-southeast1.run.app/src/assets/images/cyber_tech_core_1781269848111.jpg" 
+                alt="Mini Malta node illustration" 
+                class="w-full h-full object-cover"
+                onerror="this.src='https://images.unsplash.com/photo-1541462608141-2ff030de4a40?auto=format&fit=crop&w=400&q=80'"
+              >
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              <div class="absolute bottom-3 left-3 flex items-center gap-1.5">
+                <span class="px-2.5 py-1 bg-amber-500 text-black font-semibold font-mono text-[9px] uppercase tracking-wider rounded-full">Valletta, MT</span>
+              </div>
+            </div>
+            <div class="mt-4 text-left">
+              <h4 class="text-base font-bold">Blurr Systems Core</h4>
+              <p class="text-xs font-mono text-neutral-400">Secure Maltese Digital Station</p>
+            </div>
+            <button @click="triggerModal('contact')" class="w-full mt-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-amber-500 hover:text-amber-500 duration-300 cursor-pointer text-xs font-mono uppercase tracking-wider">
+              Enquire Connection
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO MATRIX SHOWCASE -->
+  <section id="portfolio-section" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
+    <div class="max-w-7xl mx-auto" x-data="{ currentCategory: 'All' }">
+      
+      <!-- Portfolio Header filters -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+        <div>
+          <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
+            <i data-lucide="layers" class="text-amber-500"></i> Selected Works
+          </p>
+          <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight">Active Cyber Projects</h2>
+        </div>
+
+        <div class="flex flex-wrap gap-1.5 bg-neutral-100 dark:bg-neutral-900 p-1.5 rounded-2xl border border-neutral-200 dark:border-neutral-850">
+          <template x-for="cat in ['All', 'Websites', 'UI/UX', 'Brand Guidelines']">
+            <button 
+              @click="currentCategory = cat"
+              :class="currentCategory === cat ? 'bg-amber-500 text-black shadow-md font-bold' : 'text-neutral-500 hover:text-neutral-850'"
+              class="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer duration-200"
+              x-text="cat"
+            ></button>
+          </template>
         </div>
       </div>
 
-      <!-- Portfolio Item Grid -->
+      <!-- PORTFOLIO MESH GRID -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         
         <!-- Project 1 -->
-        <div onclick="openLightbox('TryHackMe Cyber Core', 'A highly advanced 3D render of an abstract cyber-security hub, featuring blue cyber-lattices and dynamic holographic user flows.', 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80')" class="group relative rounded-[40px] overflow-hidden bg-gradient-to-br from-neutral-900 to-amber-950/20 shadow-xl cursor-pointer h-[340px] flex flex-col justify-end p-6 md:p-8 transform transition-transform duration-500 hover:-translate-y-1">
-          <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" alt="Cyber security tech illustration" class="w-full h-full object-cover opacity-35 group-hover:opacity-60 transition-opacity duration-500" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        <div 
+          x-show="currentCategory === 'All' || currentCategory === 'Websites'"
+          x-transition
+          @click="openProjectLightbox('TryHackMe Security Portal', 'Websites', 'https://ais-dev-ppgz6wlmd4rezknqssw6qa-760246716225.asia-southeast1.run.app/src/assets/images/tech_illustration_1781269475429.jpg', 'Reconstruction of active business landing architecture featuring fully responsive cyber layouts, secure vector structures, and optimization vectors delta.', ['Framer Motion', 'TailwindCSS', 'React Layouts'])"
+          class="group relative rounded-[40px] overflow-hidden border border-neutral-200 dark:border-neutral-850 bg-black h-[360px] md:h-[400px] flex flex-col justify-end p-6 md:p-8 cursor-pointer transition-transform duration-500 hover:-translate-y-1"
+        >
+          <div class="absolute inset-0 overflow-hidden">
+            <img src="https://ais-dev-ppgz6wlmd4rezknqssw6qa-760246716225.asia-southeast1.run.app/src/assets/images/tech_illustration_1781269475429.jpg" class="w-full h-full object-cover grayscale opacity-45 group-hover:opacity-75 group-hover:grayscale-0 duration-700 transition" alt="Security Portal UI" onerror="this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80'">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
           </div>
-          <div class="relative z-10 flex flex-col gap-2 text-left">
-            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-400 bg-amber-400/15 w-fit px-2.5 py-0.5 rounded-full border border-amber-400/30">Websites</span>
-            <h3 class="text-2xl font-extrabold text-white mt-1 group-hover:text-amber-400 transition-colors">TryHackMe Cyber Core</h3>
-            <p class="text-sm text-neutral-300 leading-relaxed max-w-sm">Advanced system with scrolling security mesh grids & landing frameworks.</p>
+          <div class="relative z-10 space-y-2.5 text-white">
+            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">Websites</span>
+            <h3 class="text-2xl font-extrabold group-hover:text-amber-500 duration-300">TryHackMe Security Portal</h3>
+            <p class="text-neutral-400 text-sm">Custom layout deployment featuring advanced futuristic grids.</p>
           </div>
         </div>
 
         <!-- Project 2 -->
-        <div onclick="openLightbox('Alpha Guidelines', 'Corporate branding manual engineered for Swiss Alpha platforms with tailored grids and custom styling assets.', 'https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80')" class="group relative rounded-[40px] overflow-hidden bg-gradient-to-br from-neutral-900 to-amber-950/20 shadow-xl cursor-pointer h-[340px] flex flex-col justify-end p-6 md:p-8 transform transition-transform duration-500 hover:-translate-y-1">
-          <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80" alt="Brand identity" class="w-full h-full object-cover opacity-35 group-hover:opacity-60 transition-opacity duration-500" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        <div 
+          x-show="currentCategory === 'All' || currentCategory === 'Brand Guidelines'"
+          x-transition
+          @click="openProjectLightbox('Alpha Brand Guidelines System', 'Brand Guidelines', 'https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80', 'Consolidated vector typography scales, custom luxury logo alignments, style layouts, custom brand systems, and stationary matrices for Malta Corporate networks.', ['Identity Guides', 'Vector Packaging', 'Typographic Grids'])"
+          class="group relative rounded-[40px] overflow-hidden border border-neutral-200 dark:border-neutral-850 bg-black h-[360px] md:h-[400px] flex flex-col justify-end p-6 md:p-8 cursor-pointer transition-transform duration-500 hover:-translate-y-1"
+        >
+          <div class="absolute inset-0 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale opacity-45 group-hover:opacity-75 group-hover:grayscale-0 duration-700 transition" alt="Brand Book">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
           </div>
-          <div class="relative z-10 flex flex-col gap-2 text-left">
-            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-400 bg-amber-400/15 w-fit px-2.5 py-0.5 rounded-full border border-amber-400/30">Brand Guidelines</span>
-            <h3 class="text-2xl font-extrabold text-white mt-1 group-hover:text-amber-400 transition-colors">Alpha Guidelines</h3>
-            <p class="text-sm text-neutral-300 leading-relaxed max-w-sm">Consolidated luxury typography scales and custom Maltese branding elements.</p>
+          <div class="relative z-10 space-y-2.5 text-white">
+            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">Brand Guidelines</span>
+            <h3 class="text-2xl font-extrabold group-hover:text-amber-500 duration-300">Alpha Brand Guidelines System</h3>
+            <p class="text-neutral-400 text-sm">Bespoke identity matrices built for Malta capital systems.</p>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div 
+          x-show="currentCategory === 'All' || currentCategory === 'UI/UX'"
+          x-transition
+          @click="openProjectLightbox('Vibe Messenger Glass UI', 'UI/UX', 'https://images.unsplash.com/photo-1541462608141-2ff030de4a40?auto=format&fit=crop&w=800&q=80', 'Premium glassmorphism dashboard modeling featuring transparent containers, soft neon highlights accents, and high fidelity transition parameters.', ['Glassmorphism Interface', 'Active Workflows', 'Dashboard Concept'])"
+          class="group relative rounded-[40px] overflow-hidden border border-neutral-200 dark:border-neutral-850 bg-black h-[360px] md:h-[400px] flex flex-col justify-end p-6 md:p-8 cursor-pointer transition-transform duration-500 hover:-translate-y-1"
+        >
+          <div class="absolute inset-0 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1541462608141-2ff030de4a40?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale opacity-45 group-hover:opacity-75 group-hover:grayscale-0 duration-700 transition" alt="Glass UI">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
+          </div>
+          <div class="relative z-10 space-y-2.5 text-white">
+            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">UI/UX</span>
+            <h3 class="text-2xl font-extrabold group-hover:text-amber-500 duration-300">Vibe Messenger Glass UI</h3>
+            <p class="text-neutral-400 text-sm">Glassmorphism parameters configured with sleek glows.</p>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div 
+          x-show="currentCategory === 'All' || currentCategory === 'Websites'"
+          x-transition
+          @click="openProjectLightbox('Luxury Timepieces E-Shop', 'Websites', 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80', 'Luxury headless eShop layout configured with precision, using full parallax movements, high-end layouts, and standalone checkout routines.', ['Headless eCommerce', 'Parallax Scrolling', 'Elegant Design'])"
+          class="group relative rounded-[40px] overflow-hidden border border-neutral-200 dark:border-neutral-850 bg-black h-[360px] md:h-[400px] flex flex-col justify-end p-6 md:p-8 cursor-pointer transition-transform duration-500 hover:-translate-y-1"
+        >
+          <div class="absolute inset-0 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale opacity-45 group-hover:opacity-75 group-hover:grayscale-0 duration-700 transition" alt="eCommerce Concept">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
+          </div>
+          <div class="relative z-10 space-y-2.5 text-white">
+            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">Websites</span>
+            <h3 class="text-2xl font-extrabold group-hover:text-amber-500 duration-300">Luxury Timepieces E-Shop</h3>
+            <p class="text-neutral-400 text-sm">Shopify layout custom design optimized for dynamic frames.</p>
           </div>
         </div>
 
@@ -390,39 +500,184 @@
     </div>
   </section>
 
-  <!-- HONORS AND RECOGNITION -->
-  <section id="reviews" class="relative w-full py-16 md:py-24 bg-[#fafafa] dark:bg-neutral-900/40 px-4 md:px-12 border-b border-neutral-200 dark:border-neutral-800">
-    <div class="max-w-5xl mx-auto">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12">
-        <div>
-          <p class="text-xs font-mono text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-2">
-            <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> Hall of Fame
+  <!-- BIO PROFILE MARQUEE -->
+  <section id="about-section" class="relative py-16 md:py-24 bg-[#fafafa] dark:bg-neutral-900/15 border-t border-neutral-200 dark:border-neutral-800">
+    <div class="max-w-7xl mx-auto px-4 md:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Left Photo column depicting advanced cyber core -->
+        <div class="lg:col-span-5 relative flex justify-center">
+          <div class="relative w-80 h-[380px] md:w-96 md:h-[480px] rounded-[48px] overflow-hidden group shadow-2xl bg-black">
+            <img 
+              src="https://ais-dev-ppgz6wlmd4rezknqssw6qa-760246716225.asia-southeast1.run.app/src/assets/images/cyber_tech_core_1781269848111.jpg" 
+              class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+              alt="Maltese Systems"
+              onerror="this.src='https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=800&q=80'"
+            >
+            <div class="absolute bottom-6 left-6 right-6 z-20 bg-black/60 backdrop-blur-md px-5 py-4 rounded-3xl border border-white/10 flex items-center justify-between text-white">
+              <div>
+                <h4 class="text-sm font-bold">340+ Cyber Deployments</h4>
+                <p class="text-[10px] font-mono tracking-wider text-neutral-300">SECURE NETWORKS ACTIVE</p>
+              </div>
+              <div class="flex gap-0.5 text-amber-500">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Content column -->
+        <div class="lg:col-span-7 space-y-6">
+          <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
+            <i data-lucide="sparkles" class="text-amber-500"></i> Corporate Bio
           </p>
-          <h2 class="text-3xl md:text-4xl font-extrabold text-neutral-900 dark:text-white">Awards & Recognition</h2>
+          <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">Creative at the Core</h2>
+          <p class="text-amber-600 dark:text-amber-400 font-mono uppercase text-sm tracking-wider font-bold">Designer, Digital Strategist, Problem-Solver.</p>
+          <p class="text-neutral-600 dark:text-neutral-300 leading-relaxed font-sans">
+            With 13 years of dedication to complex digital visual designs, our Valletta design group integrates strict aesthetic standards with rapid engineering frameworks to build websites that enhance local conversion dynamics and brand statuses incomparably.
+          </p>
+          
+          <div class="flex flex-wrap gap-3">
+            <button @click="triggerModal('schedule')" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold px-5 py-3 rounded-2xl transition hover:scale-[1.02] cursor-pointer shadow-lg shadow-amber-500/10">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+              <span>Schedule a Call</span>
+            </button>
+            <button @click="triggerModal('contact')" class="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-900 px-5 py-3 rounded-2xl border border-neutral-200 dark:border-neutral-800 hover:border-amber-500/20 duration-300 cursor-pointer">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+              <span>Launch Request</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="border border-neutral-200 dark:border-neutral-800 rounded-3xl bg-white dark:bg-neutral-950 overflow-hidden shadow-sm">
-        <div class="divide-y divide-neutral-105 dark:divide-neutral-900">
+      <!-- Ticker Marquee Loop -->
+      <div class="relative w-full mt-16 md:mt-24 border-y border-neutral-200/60 dark:border-neutral-800/60 py-6 overflow-hidden">
+        <div class="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-white dark:from-neutral-950 to-transparent z-10"></div>
+        <div class="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-white dark:from-neutral-950 to-transparent z-10"></div>
+        <div class="flex whitespace-nowrap">
+          <div class="flex shrink-0 gap-12 text-sm font-mono tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-bold animate-marquee">
+            <span>Maltese Engineering Visual Standards ✦</span>
+            <span>13+ Years Design Experience ✦</span>
+            <span>340+ High-End Projects Executed ✦</span>
+            <span>No Generic Templates Guaranteed ✦</span>
+            <span>Awwwards Nominations ✦</span>
+          </div>
+          <div class="flex shrink-0 gap-12 text-sm font-mono tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-bold animate-marquee ml-12">
+            <span>Maltese Engineering Visual Standards ✦</span>
+            <span>13+ Years Design Experience ✦</span>
+            <span>340+ High-End Projects Executed ✦</span>
+            <span>No Generic Templates Guaranteed ✦</span>
+            <span>Awwwards Nominations ✦</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HONORS AND REVIEWS SECTION -->
+  <section id="awards-section" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12">
+        <div>
+          <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 tracking-widest uppercase flex items-center gap-2 mb-2">
+            <i data-lucide="award" class="text-amber-500"></i> Hall of Fame
+          </p>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Awards & Recognition</h2>
+        </div>
+        <p class="text-sm text-neutral-500 max-w-sm">Jury achievements and designer of the day mentions celebrating high-end Maltese interactive layouts.</p>
+      </div>
+
+      <!-- Awards Table -->
+      <div class="border border-neutral-200 dark:border-neutral-800 rounded-3xl bg-[#fafafa]/50 dark:bg-neutral-900/10 overflow-hidden">
+        <div class="grid grid-cols-12 px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 text-xs font-mono text-neutral-400 uppercase tracking-widest bg-[#fafafa] dark:bg-neutral-900/60 font-bold">
+          <div class="col-span-6 md:col-span-5">Award & Honor Title</div>
+          <div class="col-span-6 md:col-span-4">Issuing Authority</div>
+          <div class="hidden md:block md:col-span-3 text-right">Date of Issue</div>
+        </div>
+
+        <div class="divide-y divide-neutral-200 dark:divide-neutral-800">
+          <div class="grid grid-cols-12 items-center px-6 py-5 hover:bg-neutral-50 dark:hover:bg-neutral-900/40 duration-200">
+            <div class="col-span-12 md:col-span-5 flex items-center gap-3">
+              <div class="p-2 bg-amber-500/15 rounded-xl text-amber-500"><i data-lucide="trophy" class="w-4 h-4"></i></div>
+              <span class="font-bold text-neutral-900 dark:text-white">WD Website Favorite</span>
+            </div>
+            <div class="col-span-6 md:col-span-4 text-xs font-mono text-neutral-500 mt-1 md:mt-0">WD Design Awards</div>
+            <div class="col-span-6 md:col-span-3 text-right text-xs font-mono text-neutral-400 mt-1 md:mt-0">April 3, 2026</div>
+          </div>
           
-          <div class="grid grid-cols-1 md:grid-cols-12 items-center p-6 gap-2">
-            <div class="col-span-12 md:col-span-6 flex items-center gap-3">
-              <div class="p-2.5 bg-neutral-100 dark:bg-neutral-900 rounded-xl"><i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i></div>
-              <span class="text-base font-extrabold text-neutral-900 dark:text-white">WD Website Favorite</span>
+          <div class="grid grid-cols-12 items-center px-6 py-5 hover:bg-neutral-50 dark:hover:bg-neutral-900/40 duration-200">
+            <div class="col-span-12 md:col-span-5 flex items-center gap-3">
+              <div class="p-2 bg-amber-500/15 rounded-xl text-amber-500"><i data-lucide="crown" class="w-4 h-4"></i></div>
+              <span class="font-bold text-neutral-900 dark:text-white">Project of The Day Gold</span>
             </div>
-            <div class="col-span-12 md:col-span-4 text-sm text-neutral-500">WD Design Awards</div>
-            <div class="col-span-12 md:col-span-2 text-right text-xs font-mono text-neutral-400">April 2026</div>
+            <div class="col-span-6 md:col-span-4 text-xs font-mono text-neutral-500 mt-1 md:mt-0">Astonishing Awards</div>
+            <div class="col-span-6 md:col-span-3 text-right text-xs font-mono text-neutral-400 mt-1 md:mt-0">March 22, 2026</div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-12 items-center p-6 gap-2">
-            <div class="col-span-12 md:col-span-6 flex items-center gap-3">
-              <div class="p-2.5 bg-neutral-100 dark:bg-neutral-900 rounded-xl"><i data-lucide="crown" class="w-4 h-4 text-amber-500"></i></div>
-              <span class="text-base font-extrabold text-neutral-900 dark:text-white">Gold Project of the Day</span>
+          <div class="grid grid-cols-12 items-center px-6 py-5 hover:bg-neutral-50 dark:hover:bg-neutral-900/40 duration-200">
+            <div class="col-span-12 md:col-span-5 flex items-center gap-3">
+              <div class="p-2 bg-amber-500/15 rounded-xl text-amber-500"><i data-lucide="globe" class="w-4 h-4"></i></div>
+              <span class="font-bold text-neutral-900 dark:text-white">Site of the Day Nominee</span>
             </div>
-            <div class="col-span-12 md:col-span-4 text-sm text-neutral-500">Astonishing Awards</div>
-            <div class="col-span-12 md:col-span-2 text-right text-xs font-mono text-neutral-400">March 2026</div>
+            <div class="col-span-6 md:col-span-4 text-xs font-mono text-neutral-500 mt-1 md:mt-0">Awwwards International</div>
+            <div class="col-span-6 md:col-span-3 text-right text-xs font-mono text-neutral-400 mt-1 md:mt-0">March 21, 2026</div>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- WORK TIMELINE SECTION -->
+  <section id="experience-section" class="relative py-16 md:py-24 bg-[#fafafa] dark:bg-neutral-900/20 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-12">
+        <div>
+          <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
+            <i data-lucide="briefcase" class="text-amber-500"></i> Career Milestones
+          </p>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Work Experience</h2>
+        </div>
+        <button @click="triggerModal('contact')" class="px-5 py-3 border border-amber-500/30 text-amber-600 hover:border-amber-500 rounded-2xl text-xs font-mono tracking-wider uppercase font-semibold">
+          Download Full CV
+        </button>
+      </div>
+
+      <!-- Experience Block timeline -->
+      <div class="space-y-6">
+        <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 flex flex-col md:flex-row gap-6 items-start hover:shadow-lg duration-300">
+          <div class="md:w-1/4 shrink-0 font-mono text-sm text-neutral-400 font-bold">2025 - Current</div>
+          <div class="md:w-3/4 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="text-lg font-bold">Lead Creative Designer</h3>
+              <span class="text-xs font-mono px-3 py-1 bg-neutral-100 dark:bg-neutral-900 rounded-xl">TryHackMe Security LLC</span>
+            </div>
+            <p class="text-sm text-neutral-500">Spearheading modern landing layouts, product guidelines architectures, and direct frontend visual conversions. Spearheaded user engagement optimization initiatives resulting in a 35% conversion delta increase.</p>
+          </div>
+        </div>
+
+        <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 flex flex-col md:flex-row gap-6 items-start hover:shadow-lg duration-300">
+          <div class="md:w-1/4 shrink-0 font-mono text-sm text-neutral-400 font-bold">2023 - Current</div>
+          <div class="md:w-3/4 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="text-lg font-bold">Founder & Creative Director</h3>
+              <span class="text-xs font-mono px-3 py-1 bg-neutral-100 dark:bg-neutral-900 rounded-xl">Blurr Creative™</span>
+            </div>
+            <p class="text-sm text-neutral-500">Designing premium full-spectrum digital assets, bespoke Framer components, e-commerce architectures, and vector branding guidelines systems for an elite global client roster.</p>
+          </div>
+        </div>
+
+        <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 flex flex-col md:flex-row gap-6 items-start hover:shadow-lg duration-300">
+          <div class="md:w-1/4 shrink-0 font-mono text-sm text-neutral-400 font-bold">2021 - 2023</div>
+          <div class="md:w-3/4 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="text-lg font-bold">Senior UI/UX Architect</h3>
+              <span class="text-xs font-mono px-3 py-1 bg-neutral-100 dark:bg-neutral-900 rounded-xl">VibeStudio Valletta</span>
+            </div>
+            <p class="text-sm text-neutral-500">Formulated custom structural user flows, design assets libraries, and interactive digital interfaces for decentralized social nodes and premium mobile platforms.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -430,251 +685,170 @@
 
   <!-- FLOATING NAVIGATION CAPSULE -->
   <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-fit px-4">
-    <nav class="bg-black/90 dark:bg-neutral-950/95 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 dark:border-neutral-800/80 flex items-center gap-5 sm:gap-7 shadow-2xl">
-      <a href="#home" class="p-1.5 rounded-full text-neutral-400 hover:text-white transition-colors"><i data-lucide="home" class="w-4 h-4"></i></a>
-      <a href="#skills" class="text-xs font-semibold uppercase text-neutral-400 hover:text-white transition-colors">Skills</a>
-      <a href="#about" class="text-xs font-semibold uppercase text-neutral-400 hover:text-white transition-colors">About</a>
-      <a href="#portfolio" class="text-xs font-semibold uppercase text-neutral-400 hover:text-white transition-colors flex items-center gap-1">Portfolio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
-      <a href="#reviews" class="text-xs font-semibold uppercase text-neutral-400 hover:text-white transition-colors">Reviews</a>
-      <button onclick="openModal('contact')" class="bg-amber-500 hover:bg-amber-600 text-black text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full cursor-pointer">Contact me</button>
+    <nav class="bg-black/90 dark:bg-neutral-950/95 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 flex items-center gap-7 shadow-2xl">
+      <a href="#hero-section" @click="activeSection = 'home'" :class="activeSection === 'home' ? 'text-amber-400' : 'text-neutral-400 hover:text-white'" class="p-1.5 duration-200 transition">
+        <i data-lucide="home" class="w-4 h-4"></i>
+      </a>
+      <a href="#services-section" @click="activeSection = 'skills'" :class="activeSection === 'skills' ? 'text-amber-400' : 'text-neutral-400/80 hover:text-white'" class="text-xs uppercase font-bold tracking-wider duration-200">Skills</a>
+      <a href="#about-section" @click="activeSection = 'about'" :class="activeSection === 'about' ? 'text-amber-400' : 'text-neutral-400/80 hover:text-white'" class="text-xs uppercase font-bold tracking-wider duration-200">About</a>
+      <a href="#portfolio-section" @click="activeSection = 'portfolio'" :class="activeSection === 'portfolio' ? 'text-amber-400' : 'text-neutral-400/80 hover:text-white'" class="text-xs uppercase font-bold tracking-wider duration-200">Portfolio</a>
+      <button @click="triggerModal('contact')" class="bg-amber-500 hover:bg-amber-600 text-black text-xs font-extrabold uppercase tracking-widest px-4 py-2.5 rounded-full duration-300 shadow-md cursor-pointer">
+        Contact me
+      </button>
     </nav>
   </div>
 
-  <!-- FLOATING CHAT TRIGGER -->
-  <button onclick="toggleChat()" class="fixed bottom-6 right-6 z-40 flex items-center justify-center gap-2.5 bg-neutral-950 border border-neutral-850 text-white rounded-full px-5 py-3.5 shadow-2xl hover:bg-neutral-900 transition-all cursor-pointer">
-    <div class="relative">
-      <i data-lucide="message-square" class="w-5 h-5 text-amber-500"></i>
-      <span class="absolute -top-1.5 -right-1.5 flex h-2.5 w-2.5">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full bg-emerald-500 h-2.5 w-2.5"></span>
-      </span>
-    </div>
-    <span class="text-xs font-sans font-medium tracking-tight">Chat with Blurr AI</span>
-  </button>
+  <!-- CONTACT & SCHEDULING POPUP SLIDING MODAL -->
+  <div x-show="isContactOpen" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Backdrop Layer -->
+    <div x-show="isContactOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @click="isContactOpen = false" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    
+    <!-- Modal Container Panel -->
+    <div x-show="isContactOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4" x-transition:enter-end="opacity-100 scale-100 translate-y-0" class="relative w-full max-w-lg overflow-hidden rounded-3xl bg-neutral-950 border border-neutral-800 p-6 text-white shadow-2xl z-10 space-y-4">
+      <div class="flex items-center justify-between border-b border-neutral-800 pb-4">
+        <h3 class="text-xl font-bold font-sans" x-text="modalType === 'schedule' ? 'Schedule a discovery call' : 'Launch a project together'"></h3>
+        <button @click="isContactOpen = false" class="text-neutral-400 hover:text-white p-2 rounded-full hover:bg-neutral-900"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
 
-  <!-- CHAT WINDOW OVERLAY -->
-  <div id="chat-backdrop" class="hidden fixed inset-0 z-50 flex items-end justify-end p-4 md:p-6 pointer-events-none">
-    <div onclick="toggleChat()" class="absolute inset-0 bg-black/10 pointer-events-auto"></div>
-    <div class="relative w-full max-w-sm h-[500px] bg-neutral-950 border border-neutral-800 rounded-3xl shadow-2xl flex flex-col pointer-events-auto text-white">
-      <div class="flex items-center justify-between p-4 bg-neutral-900 border-b border-neutral-800 rounded-t-3xl">
-        <div class="flex items-center gap-2.5">
-          <div class="p-2 bg-amber-550 bg-amber-500 text-black rounded-full"><i data-lucide="bot" class="w-4 h-4"></i></div>
-          <div>
-            <h4 class="text-xs font-bold">Blurr Assistant</h4>
-            <p class="text-[9px] font-mono text-emerald-400 uppercase tracking-widest flex items-center gap-1">Live & Active</p>
+      <form @submit.prevent="alert('Request received! We will send a packet in moments.'); isContactOpen = false;" class="space-y-4">
+        <div>
+          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1.5">Name</label>
+          <input type="text" required placeholder="Wade Warren" class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 placeholder-neutral-600 text-sm focus:outline-none focus:border-amber-500">
+        </div>
+        <div>
+          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1.5">Email Address</label>
+          <input type="email" required placeholder="wade@company.com" class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 placeholder-neutral-600 text-sm focus:outline-none focus:border-amber-500">
+        </div>
+        <div x-show="modalType === 'schedule'">
+          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1.5">Preferred Date / Time</label>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="date" class="bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs focus:outline-none">
+            <input type="time" class="bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs focus:outline-none">
           </div>
         </div>
-        <button onclick="toggleChat()" class="text-neutral-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-
-      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
-        <div class="flex gap-2.5 max-w-[85%]">
-          <div class="p-2 bg-neutral-900 rounded-2xl h-8 w-8 flex items-center justify-center"><i data-lucide="bot" class="w-4 h-4 text-amber-500"></i></div>
-          <div class="bg-neutral-900 p-3 rounded-2xl rounded-tl-sm text-xs leading-relaxed text-left">
-            Hey! Ask me anything about Blurr's design systems, Malta integration, or work milestones!
-          </div>
-        </div>
-      </div>
-
-      <div class="p-4 bg-neutral-900 border-t border-neutral-800 rounded-b-3xl flex items-center gap-2">
-        <input id="chat-input" type="text" placeholder="Query Blurr Core..." class="flex-1 bg-neutral-950 text-xs border border-neutral-800 rounded-2xl px-3 py-2.5 focus:outline-none focus:border-amber-500" onkeydown="if(event.key === 'Enter') handleChatInput()" />
-        <button onclick="handleChatInput()" class="bg-amber-500 hover:bg-amber-600 text-black p-2.5 rounded-2xl cursor-pointer"><i data-lucide="send" class="w-4 h-4"></i></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONTACT & SCHEDULE MODAL -->
-  <div id="contact-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div onclick="closeModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-    <div class="relative w-full max-w-md bg-neutral-900 border border-neutral-800 p-6 rounded-3xl text-white shadow-2xl z-10">
-      <div class="flex justify-between items-center border-b border-rose-950/20 border-neutral-800 pb-4 mb-4">
-        <h3 id="modal-title" class="text-lg font-bold font-sans">Contact Blurr</h3>
-        <button onclick="closeModal()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <form id="contact-form" onsubmit="submitContact(event)" class="space-y-4">
         <div>
-          <label class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Your Name</label>
-          <input required type="text" class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white" placeholder="Wade Warren" />
+          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1.5">Custom Message</label>
+          <textarea rows="3" required placeholder="Tell our Valletta design core briefly about your operational ideas..." class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 placeholder-neutral-600 text-xs focus:outline-none focus:border-amber-500 resize-none"></textarea>
         </div>
-        <div>
-          <label class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Email Address</label>
-          <input required type="email" class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white" placeholder="wade@company.com" />
-        </div>
-        <div>
-          <label class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Brief Details</label>
-          <textarea required rows="3" class="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-sm text-white" placeholder="How can we build together?"></textarea>
-        </div>
-        <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-xl text-xs uppercase tracking-wider transition">Send Briefing</button>
+        <button type="submit" class="w-full py-3 bg-amber-500 text-black font-semibold rounded-xl hover:bg-amber-600 transition duration-300">Send Malta Core Inquiry</button>
       </form>
     </div>
   </div>
 
-  <!-- PORTFOLIO LIGHTBOX -->
-  <div id="lightbox" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div onclick="closeLightbox()" class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
-    <div class="relative w-full max-w-lg bg-neutral-950 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl z-10">
-      <img id="lightbox-img" src="" alt="Detail Image" class="w-full h-56 object-cover" />
-      <div class="p-6 text-left text-white">
-        <h3 id="lightbox-title" class="text-xl font-extrabold font-sans">Project Title</h3>
-        <p id="lightbox-desc" class="text-neutral-400 text-xs leading-relaxed mt-2">Extended description details of this creative process showcase asset.</p>
-        <button onclick="closeLightbox()" class="mt-6 w-full py-2.5 bg-neutral-900 border border-neutral-800 text-xs font-semibold rounded-xl hover:bg-neutral-800">Close Window</button>
+  <!-- LIGHTBOX PROJECT INTERACTIVE TRANSITIONS -->
+  <div x-show="selectedProject" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div x-show="selectedProject" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @click="selectedProject = null" class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+    
+    <div x-show="selectedProject" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4" x-transition:enter-end="opacity-100 scale-100 translate-y-0" class="relative w-full max-w-3xl overflow-hidden rounded-[36px] bg-neutral-950 border border-neutral-800 text-white shadow-2xl z-10 flex flex-col md:flex-row max-h-[85vh] overflow-y-auto">
+      <button @click="selectedProject = null" class="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 hover:bg-neutral-950 text-white border border-white/10"><i data-lucide="x" class="w-5 h-5"></i></button>
+      
+      <!-- Project Illustration -->
+      <div class="w-full md:w-1/2 h-64 md:h-auto min-h-[250px] relative">
+        <img :src="selectedProject?.img" class="w-full h-full object-cover" alt="Selected project render">
+        <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-neutral-950 via-transparent to-transparent"></div>
+      </div>
+      
+      <!-- Project Metadata content -->
+      <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between space-y-4">
+        <div>
+          <span class="text-[10px] font-mono font-bold text-amber-500 uppercase tracking-widest bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20" x-text="selectedProject?.category"></span>
+          <h3 class="text-2xl font-bold tracking-tight mt-3 text-white" x-text="selectedProject?.title"></h3>
+          <p class="text-neutral-400 text-sm mt-3 leading-relaxed" x-text="selectedProject?.desc"></p>
+          <div class="grid grid-cols-2 gap-4 border-y border-neutral-900 my-4 py-4 text-[10px] font-mono text-neutral-400">
+            <div>
+              <p class="text-neutral-500 uppercase">Production Year</p>
+              <p class="text-neutral-200 font-semibold mt-1">2026 Edition</p>
+            </div>
+            <div>
+              <p class="text-neutral-500 uppercase">Framework Target</p>
+              <p class="text-neutral-200 font-semibold mt-1">Valletta Node</p>
+            </div>
+          </div>
+        </div>
+        <button @click="selectedProject = null; triggerModal('contact')" class="w-full py-3 bg-amber-500 text-black font-semibold rounded-xl hover:bg-amber-600 transition">Enquire Technical Stack</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DYNAMIC CHATBOT DRAWER CHANNELS -->
+  <div x-data="{ open: false }">
+    <button @click="open = true" class="fixed bottom-6 right-6 z-40 bg-neutral-900 border border-neutral-800 text-white rounded-full px-5 py-3.5 shadow-2xl flex items-center gap-2 hover:bg-neutral-850 cursor-pointer duration-300">
+      <i data-lucide="message-square" class="w-5 h-5 text-amber-500"></i>
+      <span class="text-sm font-medium">Chat with Blurr AI</span>
+    </button>
+
+    <div x-show="open" style="display: none;" class="fixed inset-0 z-50 flex items-end justify-end p-4 md:p-6 pointer-events-none">
+      <div class="absolute inset-0 bg-transparent pointer-events-auto" @click="open = false"></div>
+      
+      <!-- Inside Chat Shell -->
+      <div class="relative w-full max-w-sm h-[500px] flex flex-col bg-neutral-950 border border-neutral-800 rounded-3xl shadow-2xl pointer-events-auto overflow-hidden text-white">
+        <!-- Chat Head -->
+        <div class="flex items-center justify-between bg-neutral-900 px-5 py-4 border-b border-neutral-800">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-sm font-bold">Blurr Systems AI Node</span>
+          </div>
+          <button @click="open = false" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+
+        <!-- Chat Arena -->
+        <div id="chat-arena" class="flex-1 overflow-y-auto p-4 space-y-3">
+          <template x-for="msg in chatbotMessages">
+            <div :class="msg.sender === 'user' ? 'justify-end' : 'justify-start'" class="flex items-start gap-2.5">
+              <div :class="msg.sender === 'user' ? 'bg-amber-500 text-black' : 'bg-neutral-900 text-neutral-200 border border-neutral-800/60'" class="rounded-2xl px-4 py-2 text-xs leading-relaxed max-w-[85%]">
+                <span x-text="msg.text"></span>
+              </div>
+            </div>
+          </template>
+          
+          <div x-show="isChatLoading" class="flex items-center gap-1.5 p-2 bg-neutral-900/50 rounded-xl w-fit">
+            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce"></span>
+            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+          </div>
+        </div>
+
+        <!-- Context suggestions -->
+        <div class="px-4 py-2 border-t border-neutral-900/60 bg-neutral-950/80 flex flex-wrap gap-1.5">
+          <template x-for="sug in chatbotSuggestions">
+            <button @click="sendChatMessage(sug)" class="text-[10px] bg-neutral-900 border border-neutral-850 px-2.5 py-1.5 rounded-full hover:border-amber-500/30 truncate" x-text="sug"></button>
+          </template>
+        </div>
+
+        <!-- Inputs segment -->
+        <div class="p-3 bg-neutral-900 border-t border-neutral-800 flex gap-2">
+          <input 
+            type="text" 
+            x-model="chatbotInput" 
+            @keydown.enter="sendChatMessage(chatbotInput)"
+            placeholder="Type your secure query..." 
+            class="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500"
+          >
+          <button @click="sendChatMessage(chatbotInput)" class="p-2.5 bg-amber-500 hover:bg-amber-600 text-black rounded-lg"><i data-lucide="send" class="w-4 h-4"></i></button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- FOOTER -->
-  <footer class="bg-neutral-950 border-t border-neutral-900 py-16 text-neutral-500 text-xs font-mono flex flex-col items-center gap-4">
-    <span class="flex items-center gap-2 text-white">
-      <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
-      <span class="font-extrabold font-sans text-sm tracking-widest text-neutral-200">BLURR.STUDIOS</span>
-    </span>
-    <p class="tracking-wide">Malta © 2026. ALL RIGHTS RESERVED IN BLURR MATRICES.</p>
+  <footer class="bg-neutral-950 text-neutral-500 text-xs font-mono py-16 border-t border-neutral-900/60 flex flex-col items-center gap-4 text-center z-10 relative">
+    <div class="flex items-center gap-2 text-white">
+      <i data-lucide="star" class="w-4 h-4 text-amber-500 animate-spin"></i>
+      <span class="font-extrabold font-sans tracking-widest text-sm text-neutral-200">BLURR.STUDIOS</span>
+    </div>
+    <p class="tracking-wider">Malta © 2026. ALL RIGHTS RESERVED IN BLURR MATRICES.</p>
+    <div class="flex gap-4 text-neutral-600 text-[10px] flex-wrap justify-center">
+      <a href="#privacy" class="hover:text-amber-500 transition">PRIVACY BRIEF</a>
+      <span>•</span>
+      <a href="#terms" class="hover:text-amber-500 transition">SECURITY ENVELOPE</a>
+      <span>•</span>
+      <a href="#cookies" class="hover:text-amber-500 transition font-bold">MALTA SECURE</a>
+    </div>
   </footer>
 
   <script>
-    // Initialize Lucide Icons
+    // Initialize standard lucide vector icons
     lucide.createIcons();
-
-    // Live Clock for Europe/Malta Timezone
-    function updateClock() {
-      const now = new Date();
-      const options = {
-        timeZone: "Europe/Malta",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-      };
-      const formatter = new Intl.DateTimeFormat("en-US", options);
-      document.getElementById("cet-clock").innerText = formatter.format(now) + " CET (GMT+1)";
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // Dark/Light Mode Management (Persistent)
-    const themeBtn = document.getElementById("theme-btn");
-    const themeIcon = themeBtn.querySelector("i");
-    
-    // Default to dark mode for luxury cyber styling
-    document.documentElement.classList.add("dark");
-    themeBtn.addEventListener("click", () => {
-      const isDark = document.documentElement.classList.toggle("dark");
-      themeBtn.innerHTML = isDark ? '<i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>' : '<i data-lucide="moon" class="w-4 h-4 text-neutral-700"></i>';
-      lucide.createIcons();
-    });
-
-    // Sidebar Accordion Handler
-    function toggleAccordion(id) {
-      const content = document.getElementById(`content-${id}`);
-      const chevron = document.getElementById(`chevron-${id}`);
-      const card = document.getElementById(`accordion-${id}`);
-
-      const allContents = [1, 2, 3];
-      allContents.forEach(i => {
-        if (i !== id) {
-          document.getElementById(`content-${i}`).classList.add("hidden");
-          document.getElementById(`chevron-${i}`).style.transform = "rotate(0deg)";
-          document.getElementById(`accordion-${i}`).classList.remove("border-amber-500/40", "shadow-xl");
-        }
-      });
-
-      const isHidden = content.classList.toggle("hidden");
-      chevron.style.transform = isHidden ? "rotate(0deg)" : "rotate(180deg)";
-      if (!isHidden) {
-        card.classList.add("border-amber-500/40", "shadow-xl");
-      } else {
-        card.classList.remove("border-amber-500/40", "shadow-xl");
-      }
-    }
-    toggleAccordion(1); // Set first open of default
-
-    // Contact Modal Controller
-    const modal = document.getElementById("contact-modal");
-    const modalTitle = document.getElementById("modal-title");
-    function openModal(type = "contact") {
-      modal.classList.remove("hidden");
-      modalTitle.innerText = type === "schedule" ? "Schedule a discovery call" : "Launch a project together";
-    }
-    function closeModal() {
-      modal.classList.add("hidden");
-    }
-
-    // Portfolio Lightbox Controller
-    const lightbox = document.getElementById("lightbox");
-    function openLightbox(title, desc, img) {
-      document.getElementById("lightbox-title").innerText = title;
-      document.getElementById("lightbox-desc").innerText = desc;
-      document.getElementById("lightbox-img").src = img;
-      lightbox.classList.remove("hidden");
-    }
-    function closeLightbox() {
-      lightbox.classList.add("hidden");
-    }
-
-    // Success brief form submission callback
-    function submitContact(e) {
-      e.preventDefault();
-      alert("Submission received! Thanks for reaching out. Blurr typically responds within 4 hours CET.");
-      closeModal();
-      document.getElementById("contact-form").reset();
-    }
-
-    // Chatbot Client Curation
-    const chatOverlay = document.getElementById("chat-backdrop");
-    function toggleChat() {
-      chatOverlay.classList.toggle("hidden");
-    }
-
-    const messagesBox = document.getElementById("chat-messages");
-    function handleChatInput() {
-      const input = document.getElementById("chat-input");
-      const text = input.value.trim();
-      if (!text) return;
-
-      // User Message Output
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      messagesBox.innerHTML += `
-        <div class="flex gap-2.5 max-w-[85%] ml-auto text-right flex-row-reverse">
-          <div class="p-2 bg-neutral-800 rounded-2xl h-8 w-8 flex items-center justify-center shrink-0"><i data-lucide="user" class="w-4 h-4 text-neutral-300"></i></div>
-          <div class="bg-amber-550 bg-amber-500 text-black text-xs font-medium p-3 rounded-2xl rounded-tr-sm text-left">
-            ${text}
-          </div>
-        </div>
-      `;
-      input.value = "";
-      messagesBox.scrollTop = messagesBox.scrollHeight;
-      lucide.createIcons();
-
-      // Bot simulation response
-      setTimeout(() => {
-        let responseText = "Understood. Our cybernetic framework accepts custom design integrations. Send us an email direct or schedule a discovery call to synchronize milestones.";
-        if (text.toLowerCase().includes("philosoph") || text.toLowerCase().includes("design")) {
-          responseText = "Our design guidelines discard cookie-cutter templates. We prioritize custom typography ratios, high negative space, and absolute digital status.";
-        } else if (text.toLowerCase().includes("service") || text.toLowerCase().includes("do")) {
-          responseText = "We operate across high-fidelity React Single Page Apps, custom UI/UX, product guidelines vectors, and cinematic visual assets.";
-        }
-        
-        messagesBox.innerHTML += `
-          <div class="flex gap-2.5 max-w-[85%] mr-auto text-left">
-            <div class="p-2 bg-neutral-900 rounded-2xl h-8 w-8 flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-4 h-4 text-amber-500"></i></div>
-            <div class="bg-neutral-900 p-3 rounded-2xl rounded-tl-sm text-xs leading-relaxed text-left">
-              ${responseText}
-            </div>
-          </div>
-        `;
-        messagesBox.scrollTop = messagesBox.scrollHeight;
-        lucide.createIcons();
-      }, 750);
-    }
-
-    // Copy clip board helper
-    function copyToClipboard(val, elementId) {
-      navigator.clipboard.writeText(val);
-      const btn = document.getElementById(elementId);
-      const prevText = btn.innerHTML;
-      btn.innerHTML = '<span>Email Copied!</span>';
-      setTimeout(() => btn.innerHTML = prevText, 2000);
-    }
   </script>
 </body>
 </html>

@@ -1,28 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BLURR.STUDIOS | Malta Creative Tech Core</title>
-
-  <!-- Typography -->
+  <title>BLURR.SYSTEMS | Malta Creative Tech Core</title>
+  
+  <!-- Typography & Styling CDNs -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS -->
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Alpine Intersect plugin must load BEFORE Alpine core -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
+  <!-- Alpine.js Core -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- AOS loaded FIRST so it's ready by x-init time -->
+  <!-- AOS Scroll Reveal CDN -->
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-
-  <!-- Alpine Intersect BEFORE Alpine core -->
-  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
 
   <script>
     tailwind.config = {
@@ -43,215 +44,204 @@
   </script>
 
   <style>
-    /* ─── Smooth scroll with offset for fixed nav ─── */
-    html {
-      scroll-behavior: smooth;
-    }
-    /* Offset scroll targets by 80px so floating nav doesn't cover headings */
-    [id] {
-      scroll-margin-top: 80px;
-    }
-
-    /* ─── Marquee ─── */
     @keyframes marquee {
-      0%   { transform: translateX(0); }
+      0% { transform: translateX(0%); }
       100% { transform: translateX(-50%); }
     }
     .animate-marquee {
       display: flex;
       animation: marquee 35s linear infinite;
-      will-change: transform;
     }
-    @media (prefers-reduced-motion: reduce) {
-      .animate-marquee { animation: none; }
-      .animate-float-soft { animation: none; }
-      .animate-pulse-slow { animation: none; }
-    }
-
-    /* ─── Grid backdrop ─── */
     .bg-grid-cyber {
       background-size: 40px 40px;
-      background-image:
-        linear-gradient(to right, rgba(251,191,36,.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(251,191,36,.03) 1px, transparent 1px);
+      background-image: linear-gradient(to right, rgba(251, 191, 36, 0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(251, 191, 36, 0.03) 1px, transparent 1px);
     }
     .dark .bg-grid-cyber {
-      background-image:
-        linear-gradient(to right, rgba(251,191,36,.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(251,191,36,.04) 1px, transparent 1px);
+      background-image: linear-gradient(to right, rgba(251, 191, 36, 0.04) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(251, 191, 36, 0.04) 1px, transparent 1px);
     }
-
-    /* ─── Scrollbar ─── */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #333; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb { background: #333333; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #ffb020; }
-
-    /* ─── Scroll progress ─── */
+    
     #scroll-progress-bar {
       height: 100%;
       width: 0%;
       background: linear-gradient(to right, #f59e0b, #fbbf24);
-      transition: width .1s ease-out;
+      transition: width 0.1s ease-out;
     }
-
-    /* ─── Float badge ─── */
     @keyframes float-soft {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-6px); }
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
     }
     .animate-float-soft { animation: float-soft 4s ease-in-out infinite; }
-
-    /* ─── Accordion smooth height transition ─── */
-    .accordion-body {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows .35s ease;
-    }
-    .accordion-body.open {
-      grid-template-rows: 1fr;
-    }
-    .accordion-inner {
-      overflow: hidden;
-    }
-
-    /* ─── Counters ─── */
     .counter-num { font-variant-numeric: tabular-nums; }
   </style>
 </head>
-
-<!-- ════════════════════════════════════════════════════
-     ROOT Alpine component — ALL shared state lives here.
-     Chat drawer is INSIDE this root so it can access everything.
-     ════════════════════════════════════════════════════ -->
-<body
-  x-data="{
-    /* ── Theme ── */
-    darkMode: false,
-    toggleTheme() {
-      this.darkMode = !this.darkMode;
-      localStorage.setItem('dark-mode', this.darkMode);
-    },
-
-    /* ── Nav active section ── */
+<body 
+  x-data="{ 
+    darkMode: false, 
     activeSection: 'home',
-
-    /* ── Modals ── */
     isContactOpen: false,
     modalType: 'contact',
-    triggerModal(type) {
-      this.modalType = type;
-      this.isContactOpen = true;
-    },
-
-    /* ── Portfolio lightbox ── */
     selectedProject: null,
-    openProjectLightbox(title, category, img, desc, tags) {
-      this.selectedProject = { title, category, img, desc, tags };
-    },
-
-    /* ── Chatbot ── */
     isChatOpen: false,
     chatbotInput: '',
     chatbotMessages: [
-      { sender: 'bot', text: 'Hey! I am Blurr's custom-trained AI assistant. Ask me anything about my background, Malta studio services, or how we can build something unforgettable together!', ts: '06:00 AM' }
+      { sender: 'bot', text: 'Hey! I am Blurr’s custom-trained AI assistant. Ask me anything about our background, Malta studio services, or how we can build something unforgettable together!', timestamp: '06:00 AM' }
     ],
     chatbotSuggestions: [
       'What is your design philosophy?',
       'What services do you perform?',
       'Tell me about your experience',
-      'How can we schedule a consultation?'
+      'How do we schedule a call?'
     ],
     isChatLoading: false,
-    sendChatMessage(text) {
+    statsAnimated: false,
+    counters: { projects: 0, years: 0, clients: 0, awards: 0 },
+    
+    // Core data pools embedded dynamically to avoid redundant html weight
+    services: [
+      { id: 'serv-1', number: '01', accent: 'Top Performing', title: 'Web Design', icon: 'code', description: 'I design no-code websites and bespoke native experiences that are fully responsive, mobile-ready, and highly polished. Each site is custom crafted for lightning-speed performance, optimal SEO structures, and visual storytelling.', tags: ['Figma', 'Framer', 'Webflow', 'React SPA', 'TailwindCSS'] },
+      { id: 'serv-2', number: '02', accent: 'MVP Go-to-Market', title: 'Product Design', icon: 'layout-grid', description: 'I build interface ideas from conceptual layout to live go-to-market products. I assist startups with MVP mapping, pitch presentation decks, brand identity layouts, and investor collaterals.', tags: ['MVP Design', 'Pitch Decks', 'Brand Identity', 'Product Strategy'] },
+      { id: 'serv-3', number: '03', accent: 'User Focused', title: 'UI/UX Systems', icon: 'eye', description: 'I construct deep, intuitive user journeys, interactive wireframes, and scalable design systems that make digital apps friction-free. Extensive visual research keeps every layout validated and grounded.', tags: ['Figma Systems', 'Framer Motion', 'Interactive Prototypes', 'Design Tokens'] },
+      { id: 'serv-4', number: '04', accent: 'Brand Defining', title: 'Graphic Design', icon: 'palette', description: 'I shape visual style guidelines with custom illustration packs, curated high-contrast typographic scales, and memorable logos to give brands an instantly recognizable and elite identity.', tags: ['Brand Manuals', 'Typographic Scales', 'Vector Logo Systems', 'Stationery'] },
+      { id: 'serv-5', number: '05', accent: 'AI-Driven Media', title: 'Visual Design', icon: 'sparkles', description: 'Compelling digital visuals that combine fine-art aesthetics with modern communication structures. Empowered by bleeding-edge AI models for rapid creative design iterations.', tags: ['Photoshop', 'Midjourney Specialist', 'Stable Diffusion', 'GenAI Art Direction'] },
+      { id: 'serv-6', number: '06', accent: 'Motion with Purpose', title: 'Video Editing', icon: 'video', description: 'Experienced video curation for brand explainers, cinematic social media stories, high-conversion Reels, and YouTube tutorials with bespoke animated overlays and motion graphics.', tags: ['Premiere Pro', 'After Effects', 'Cinematic Cutaways', 'Sound Design'] },
+      { id: 'serv-7', number: '07', accent: 'Data Backed', title: 'Digital Marketing', icon: 'database', description: 'Analytical execution across Google, Meta, and email automated structures to scale brand revenue and customer acquisition. High-performance landing pages engineered for optimized conversions.', tags: ['Google Search Ads', 'Meta Campaigning', 'Email Automation', 'Funnel Analytics'] },
+      { id: 'serv-8', number: '08', accent: 'Audience Growing', title: 'Social Media Marketing', icon: 'share2', description: 'I have successfully scaled organic audiences into high-value followings. I design content calendars, establish community-building tactics, and map out viral reels templates.', tags: ['Organic Growth', 'TikTok Curation', 'LinkedIn Branding', 'Strategy'] }
+    ],
+    
+    awards: [
+      { title: 'WD Website Favorite', issuer: 'WD Design Awards', date: 'April 3, 2026', icon: 'trophy' },
+      { title: 'Project of The Day Gold', issuer: 'Astonishing Awards', date: 'March 22, 2026', icon: 'crown' },
+      { title: 'Site of the Day Nominee', issuer: 'Awwwards International', date: 'March 21, 2026', icon: 'globe' },
+      { title: 'Best Portfolio Design', issuer: 'Awwwards Jury', date: 'March 17, 2026', icon: 'trophy' },
+      { title: 'Portfolio of The Day Winner', issuer: 'Foliobin Curations', date: 'March 3, 2026', icon: 'crown' },
+      { title: 'Creative Site Highlight', issuer: 'Foliobin Curations', date: 'February 20, 2026', icon: 'globe' },
+      { title: 'Outstanding Site of the Day', issuer: 'Web Design Awards USA', date: 'November 24, 2025', icon: 'trophy' },
+      { title: 'CSS Selection site nominee', issuer: 'CSS Nectar System', date: 'October 8, 2025', icon: 'globe' },
+      { title: 'Site of The Day Crown', issuer: 'Web Guru Awards', date: 'October 3, 2025', icon: 'crown' }
+    ],
+
+    projects: [
+      { id: 'proj-1', title: 'TryHackMe Security Portal', category: 'Websites', img: './src/assets/images/tech_illustration_1781269475429.jpg', fallbackImg: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80', color: 'from-neutral-900 to-emerald-950/20', desc: 'A complete reconstruction of their business landing system, with animated cyber grids, high conversion data pipelines, and a customized responsive product layout.', tags: ['Product Layout', 'Framer Motion', 'TailwindCSS', 'Native React'], url: 'https://tryhackme.com' },
+      { id: 'proj-2', title: 'Alpha Brand Guidelines System', category: 'Brand Guidelines', img: 'https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80', fallbackImg: 'https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80', color: 'from-neutral-900 to-amber-950/20', desc: 'Consolidated vector typography hierarchies, custom luxury logo alignments, brand assets manuals, and complete business stationery layouts for Malta Alpha Capital.', tags: ['Logo Guidelines', 'Typographic Scales', 'Vector Packaging', 'Brand Systems'], url: '#brand-identity' },
+      { id: 'proj-3', title: 'Vibe Messenger Glass UI', category: 'UI/UX', img: 'https://images.unsplash.com/photo-1541462608141-2ff030de4a40?auto=format&fit=crop&w=800&q=80', fallbackImg: 'https://images.unsplash.com/photo-1541462608141-2ff030de4a40?auto=format&fit=crop&w=800&q=80', color: 'from-neutral-900 to-indigo-950/20', desc: 'Minimalist chat dashboard and mobile views modeled with soft glassmorphism panels, customized neon activity glows, and customized interactions workflows.', tags: ['Interface Design', 'Mobile Views', 'Prototypes', 'Design Systems'], url: '#vibe-app' },
+      { id: 'proj-4', title: 'Luxury Timepieces E-Shop', category: 'Websites', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80', fallbackImg: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80', color: 'from-neutral-900 to-rose-950/20', desc: 'A premium, exquisite headless eCommerce layout optimized for fluid scroll, parallax clock movements, and instant checkout capabilities.', tags: ['Shopify Headless', 'Parallax Scroll', 'High-End UX', 'eCommerce'], url: '#luxury-time' }
+    ],
+    
+    activeService: 'serv-1',
+    currentCategory: 'All',
+
+    animateCounters() {
+      if (this.statsAnimated) return;
+      this.statsAnimated = true;
+      const targets = { projects: 340, years: 13, clients: 96, awards: 12 };
+      const duration = 1400;
+      const steps = 40;
+      const stepTime = duration / steps;
+      let step = 0;
+      const interval = setInterval(() => {
+        step++;
+        const progress = step / steps;
+        this.counters.projects = Math.round(targets.projects * progress);
+        this.counters.years = Math.round(targets.years * progress);
+        this.counters.clients = Math.round(targets.clients * progress);
+        this.counters.awards = Math.round(targets.awards * progress);
+        if (step >= steps) clearInterval(interval);
+      }, stepTime);
+    },
+    updateScrollProgress() {
+      const bar = document.getElementById('scroll-progress-bar');
+      if (!bar) return;
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = pct + '%';
+    },
+    toggleTheme() {
+      this.darkMode = !this.darkMode;
+      localStorage.setItem('dark-mode', this.darkMode);
+    },
+    triggerModal(type) {
+      this.modalType = type;
+      this.isContactOpen = true;
+    },
+    openProjectLightbox(proj) {
+      this.selectedProject = proj;
+    },
+    async sendChatMessage(text) {
       if (!text.trim() || this.isChatLoading) return;
-      const ts = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      this.chatbotMessages.push({ sender: 'user', text, ts });
+      this.chatbotMessages.push({ sender: 'user', text: text, timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
       this.chatbotInput = '';
       this.isChatLoading = true;
+      
       setTimeout(() => {
-        let reply = 'Our Malta studio focuses on custom premium UI/UX, database migrations, and high-conversion landing portfolios using React, TailwindCSS, and fluid transition animations. Let\'s collaborate!';
-        const t = text.toLowerCase();
-        if (t.includes('philosophy'))
-          reply = 'Our philosophy is Creative at the Core — eliminating flat generic templates, using bold displays, robust layouts, and meticulous typography pairing.';
-        else if (t.includes('experience') || t.includes('career'))
-          reply = 'Our founder features 13 years of executive tenure maintaining over 24 custom git repositories, with recent milestones in Malta, Zurich, and security firms globally.';
-        else if (t.includes('schedule') || t.includes('call') || t.includes('consultation'))
-          reply = 'Click the "Schedule Discovery" button in the hero or the "Schedule a Call" button below the bio section to pick your slot directly with our Valletta team!';
-        else if (t.includes('service'))
-          reply = 'We offer three core services: Futuristic Web Design Layouts, Interface Architecture Engineering (React/TypeScript), and Digital Branding & Secure Data Matrices.';
-        this.chatbotMessages.push({ sender: 'bot', text: reply, ts: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
+        let reply = 'Our Malta studio focuses on custom premium UI/UX, database migrations, and high conversion landing portfolios using React, TailwindCSS, and fluid transitions animations.';
+        if (text.toLowerCase().includes('philosophy')) {
+          reply = 'Our philosophy is Creative at the Core—eliminating flat generic templates, using bold displays, robust layouts, and meticulous typography pairing.';
+        } else if (text.toLowerCase().includes('services') || text.toLowerCase().includes('perform')) {
+          reply = 'We specialize in Web Design, Product Design, UI/UX systems, Graphic Design, GenAI Content, and Marketing Funnels engineered out of Valletta node.';
+        } else if (text.toLowerCase().includes('experience') || text.toLowerCase().includes('milestones')) {
+          reply = 'Our experience spans 13 years of executive design agency tenure, executing over 340 elite tech deployments across Zurich and Malta networks.';
+        } else if (text.toLowerCase().includes('schedule') || text.toLowerCase().includes('call')) {
+          reply = 'Directly click the “Schedule a Call” button in the navigation capsule to book your alignment discovery immediately with our team!';
+        }
+        this.chatbotMessages.push({ sender: 'bot', text: reply, timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
         this.isChatLoading = false;
         this.$nextTick(() => {
           const arena = document.getElementById('chat-arena');
           if (arena) arena.scrollTop = arena.scrollHeight;
         });
-      }, 1100);
-    },
-
-    /* ── Stats counter ── */
-    statsAnimated: false,
-    counters: { projects: 0, years: 0, clients: 0, awards: 0 },
-    animateCounters() {
-      if (this.statsAnimated) return;
-      this.statsAnimated = true;
-      const targets = { projects: 340, years: 13, clients: 96, awards: 12 };
-      const steps = 40;
-      let step = 0;
-      const id = setInterval(() => {
-        step++;
-        const p = step / steps;
-        this.counters.projects = Math.round(targets.projects * p);
-        this.counters.years    = Math.round(targets.years    * p);
-        this.counters.clients  = Math.round(targets.clients  * p);
-        this.counters.awards   = Math.round(targets.awards   * p);
-        if (step >= steps) clearInterval(id);
-      }, 35);
-    },
-
-    /* ── Scroll progress + active section ── */
-    updateScrollProgress() {
-      const bar = document.getElementById('scroll-progress-bar');
-      if (!bar) return;
-      const scrollTop = window.scrollY;
-      const docH = document.documentElement.scrollHeight - window.innerHeight;
-      bar.style.width = (docH > 0 ? (scrollTop / docH) * 100 : 0) + '%';
+      }, 1000);
     },
     trackScroll() {
-      const pos = window.scrollY + 200;
-      const map = [
-        ['home',      'hero-section'],
-        ['skills',    'services-section'],
-        ['skills',    'process-section'],
-        ['portfolio', 'portfolio-section'],
-        ['about',     'about-section'],
-        ['reviews',   'testimonials-section'],
-        ['reviews',   'awards-section'],
-        ['reviews',   'experience-section'],
-        ['reviews',   'faq-section'],
+      const scrollPos = window.scrollY + (window.innerHeight / 3);
+      const sections = [
+        { id: 'home', el: document.getElementById('hero-section') },
+        { id: 'skills', el: document.getElementById('services-section') },
+        { id: 'portfolio', el: document.getElementById('portfolio-section') },
+        { id: 'about', el: document.getElementById('about-section') },
+        { id: 'reviews', el: document.getElementById('testimonials-section') }
       ];
-      for (const [section, id] of map) {
-        const el = document.getElementById(id);
-        if (el && pos >= el.offsetTop && pos < el.offsetTop + el.offsetHeight) {
-          this.activeSection = section;
-          break;
+      
+      let matchedId = 'home';
+      for (const section of sections) {
+        if (section.el) {
+          const rect = section.el.getBoundingClientRect();
+          const top = rect.top + window.scrollY;
+          const bottom = top + rect.height;
+          if (scrollPos >= top && scrollPos <= bottom) {
+            matchedId = section.id;
+          }
         }
       }
+      this.activeSection = matchedId;
     }
   }"
   x-init="
     darkMode = localStorage.getItem('dark-mode') === 'true';
-    window.addEventListener('scroll', () => { trackScroll(); updateScrollProgress(); }, { passive: true });
-    /* AOS init — defer one tick so DOM is fully painted */
-    setTimeout(() => AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 }), 0);
-    /* Re-run Lucide after every Alpine DOM patch so dynamic icons render */
-    document.addEventListener('alpine:initialized', () => lucide.createIcons());
+    window.addEventListener('scroll', () => { trackScroll(); updateScrollProgress(); });
+    
+    // Quick precise AOS trigger offset configuration to trigger instantly
+    AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 40, delay: 0 });
+    
+    // Recalculate coordinates once layout settles and images load
+    window.addEventListener('load', () => { setTimeout(() => AOS.refresh(), 400); });
+    this.$watch('activeService', () => { setTimeout(() => AOS.refresh(), 350); });
+    this.$watch('currentCategory', () => { setTimeout(() => AOS.refresh(), 200); });
+    
+    // Auto trigger icons hydration
+    this.$nextTick(() => { lucide.createIcons(); });
   "
   :class="darkMode ? 'dark bg-neutral-950 text-neutral-100' : 'bg-[#fafafa] text-neutral-900'"
-  class="font-sans transition-colors duration-500 min-h-screen"
+  class="font-sans transition-colors duration-500 min-h-screen relative overflow-x-hidden"
 >
 
-  <!-- BACKGROUND GRID -->
+  <!-- BACKGROUND GRID EFFECT -->
   <div class="fixed inset-0 pointer-events-none bg-grid-cyber z-0"></div>
 
   <!-- SCROLL PROGRESS BAR -->
@@ -259,23 +249,22 @@
     <div id="scroll-progress-bar"></div>
   </div>
 
-  <!-- THEME TOGGLE -->
+  <!-- THEME TOGGLE SWITCH -->
   <div class="fixed top-24 right-4 md:right-8 z-40">
     <button
       @click="toggleTheme()"
-      class="p-3 rounded-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-lg hover:border-amber-500 hover:text-amber-500 transition-all duration-300 cursor-pointer"
-      aria-label="Toggle dark mode"
+      id="theme-toggler"
+      class="p-3 rounded-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200 shadow-lg hover:border-amber-500 hover:text-amber-500 transition-all duration-300 cursor-pointer"
+      aria-label="Toggle DarkMode"
     >
-      <!-- Sun shown in dark mode, Moon in light -->
-      <i data-lucide="sun"  class="w-4 h-4 text-amber-500"  x-show="darkMode"></i>
-      <i data-lucide="moon" class="w-4 h-4 text-amber-400" x-show="!darkMode"></i>
+      <i data-lucide="sun" class="w-4 h-4 text-amber-500 block dark:hidden"></i>
+      <i data-lucide="moon" class="w-4 h-4 text-amber-450 hidden dark:block"></i>
     </button>
   </div>
 
-  <!-- ══════════════ HERO ══════════════ -->
-  <section id="hero-section" class="relative z-10 w-full min-h-screen flex flex-col justify-between px-4 md:px-12 py-8 max-w-7xl mx-auto">
-
-    <!-- Top bar -->
+  <!-- HERO SECTION -->
+  <section id="hero-section" class="relative z-10 w-full min-h-screen flex flex-col justify-between px-4 md:px-12 py-8 bg-transparent max-w-7xl mx-auto">
+    <!-- Header -->
     <div class="flex justify-between items-center w-full z-20">
       <div class="flex items-center gap-2">
         <span class="w-3 h-3 rounded-full bg-amber-500 animate-ping"></span>
@@ -283,63 +272,47 @@
       </div>
       <div class="hidden md:flex items-center gap-2 border-l border-neutral-300 dark:border-neutral-800 pl-6">
         <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i>
-        <span class="text-xs text-neutral-600 dark:text-neutral-400">Valletta, Malta</span>
+        <span class="text-xs font-sans text-neutral-600 dark:text-neutral-400">Valletta, Malta</span>
       </div>
     </div>
 
-    <!-- Hero grid -->
+    <!-- Central Hero Split -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center my-auto pt-12 pb-8">
-      <!-- Copy -->
       <div class="space-y-6">
-        <div
-          class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 rounded-full border border-amber-500/20 text-xs font-mono text-amber-600 dark:text-amber-400 animate-float-soft"
-          data-aos="fade-down" data-aos-duration="600"
-        >
-          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 rounded-full border border-amber-500/20 text-xs font-mono text-amber-600 dark:text-amber-400 animate-float-soft" data-aos="fade-down" data-aos-duration="600">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 animate-pulse"></i>
           <span>MALTA HEADQUARTERS ACTIVE</span>
         </div>
-
-        <h1
-          class="text-5xl md:text-7xl font-extrabold leading-none tracking-tighter"
-          data-aos="fade-up" data-aos-duration="800" data-aos-delay="100"
-        >
+        <h1 class="text-5xl md:text-7xl font-extrabold font-sans leading-none tracking-tighter" data-aos="fade-up" data-aos-duration="800" data-aos-delay="50">
           ADVANCED <br>
           <span class="text-amber-500">FUTURISTIC</span> <br>
           DIGITAL SPACES
         </h1>
-
-        <p
-          class="text-base text-neutral-500 dark:text-neutral-400 max-w-md leading-relaxed"
-          data-aos="fade-up" data-aos-duration="800" data-aos-delay="200"
-        >
-          Bespoke high-fidelity interface layouts, security models, custom components, and visual digital prestige engineered directly out of Valletta.
+        <p class="text-base text-neutral-500 dark:text-neutral-400 max-w-md font-sans leading-relaxed" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+          Bespoke high-fidelity interface layouts, security models, custom UI components, and elite visual digital prestige engineered directly out of Valletta.
         </p>
-
-        <div class="flex flex-wrap gap-4 pt-4" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
-          <button
-            @click="triggerModal('contact')"
-            class="px-6 py-3.5 bg-amber-500 text-black font-semibold rounded-2xl hover:bg-amber-600 hover:scale-[1.02] shadow-xl shadow-amber-500/15 duration-300 transition-all flex items-center gap-2 cursor-pointer"
-          >
+        
+        <!-- CTA actions -->
+        <div class="flex flex-wrap gap-4 pt-4" data-aos="fade-up" data-aos-duration="800" data-aos-delay="150">
+          <button @click="triggerModal('contact')" class="px-6 py-3.5 bg-amber-500 text-black font-semibold rounded-2xl hover:bg-amber-600 hover:scale-[1.02] shadow-xl shadow-amber-500/15 duration-300 transition-all flex items-center gap-2 cursor-pointer">
             <span>Collaborate Securely</span>
             <i data-lucide="arrow-down-right" class="w-4 h-4"></i>
           </button>
-          <button
-            @click="triggerModal('schedule')"
-            class="px-6 py-3.5 bg-neutral-900 text-white dark:bg-white dark:text-black font-semibold rounded-2xl hover:opacity-85 hover:scale-[1.02] duration-300 transition-all cursor-pointer"
-          >
+          <button @click="triggerModal('schedule')" class="px-6 py-3.5 bg-neutral-900 text-white dark:bg-white dark:text-black font-semibold rounded-2xl hover:opacity-85 hover:scale-[1.02] duration-300 transition-all cursor-pointer">
             Schedule Discovery
           </button>
         </div>
       </div>
 
-      <!-- Hero visual -->
+      <!-- Advanced Cyber Core Image (Women graphic replaced with futuristic tech theme) -->
       <div class="relative flex justify-center group" data-aos="zoom-in" data-aos-duration="900" data-aos-delay="150">
         <div class="absolute -inset-1.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-[48px] blur-3xl opacity-20 group-hover:opacity-35 transition-all duration-1000 animate-pulse-slow"></div>
         <div class="relative w-80 h-[380px] md:w-[420px] md:h-[500px] rounded-[48px] overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-2xl bg-black">
-          <img
-            src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1200&q=80"
-            alt="Blurr Creative Cyber Tech Core Platform"
-            class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+          <img 
+            src="./src/assets/images/cyber_tech_core_1781269848111.jpg" 
+            alt="Blurr Creative Cyber Tech Core Platform" 
+            class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 select-none"
+            onerror="this.src='https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1200&q=80'"
           >
           <div class="absolute bottom-6 left-6 right-6 z-20 flex flex-col gap-2 bg-neutral-950/80 backdrop-blur-md p-5 rounded-3xl border border-white/10">
             <div class="flex items-center gap-1.5">
@@ -347,40 +320,33 @@
               <span class="text-[10px] font-mono text-emerald-400 font-semibold tracking-widest uppercase">CYBER NET INTERFACE ONLINE</span>
             </div>
             <h3 class="text-xl font-bold text-white tracking-tight leading-tight">Blurr Systems™</h3>
-            <p class="text-xs text-neutral-400">Valletta node active &amp; transmitting securely.</p>
+            <p class="text-xs text-neutral-400">Valletta node active & transmitting securely.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Footer clock bar -->
+    <!-- Live Malta Clock -->
     <div class="relative z-10 w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-t border-neutral-200/50 dark:border-neutral-800/40 pt-6">
       <div class="flex flex-col gap-1.5">
         <p class="text-xs text-neutral-400 font-mono uppercase tracking-widest">Based In Valletta, Malta</p>
         <div class="flex items-center gap-2 text-neutral-800 dark:text-neutral-300">
           <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i>
-          <span
-            class="font-mono text-sm tracking-widest font-bold"
-            x-data="{ time: '' }"
-            x-init="
-              const update = () => {
-                time = new Intl.DateTimeFormat('en-GB', {
-                  timeZone: 'Europe/Malta',
-                  hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
-                }).format(new Date()) + ' (GMT+2)';
-              };
-              update();
-              setInterval(update, 1000);
-            "
-            x-text="time"
-          ></span>
+          <span class="font-mono text-sm tracking-widest font-bold" x-data="{ time: '' }" x-init="
+            const update = () => {
+              const options = { timeZone: 'Europe/Malta', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+              time = new Intl.DateTimeFormat('en-GB', options).format(new Date()) + ' (GMT+2)';
+            };
+            update();
+            setInterval(update, 1000);
+          " x-text="time"></span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ STATS BAND ══════════════ -->
-  <section
+  <!-- LIVE STATS BANNER -->
+  <section 
     class="relative z-10 w-full py-12 px-4 md:px-12 bg-neutral-950 border-t border-b border-neutral-800"
     x-intersect="animateCounters()"
   >
@@ -404,214 +370,140 @@
     </div>
   </section>
 
-  <!-- ══════════════ SERVICES ══════════════ -->
+  <!-- SERVICES ACCORDION -->
   <section id="services-section" class="relative w-full py-16 md:py-24 bg-[#fafafa] dark:bg-neutral-900/10 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
-    <div class="max-w-7xl mx-auto" x-data="{ activeTab: null }">
-
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
-        <div data-aos="fade-right" data-aos-duration="700">
-          <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
-            <i data-lucide="palette" class="text-amber-500 w-4 h-4"></i> Studio Operations
-          </p>
-          <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight">Core System Capabilities</h2>
-        </div>
-        <p class="text-sm text-neutral-500 max-w-sm" data-aos="fade-left" data-aos-duration="700">
-          Click any tab below to expand service details with smooth transitions.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <div class="lg:col-span-8 space-y-4">
-
-          <!-- Service 1 -->
-          <div
-            class="rounded-3xl border transition-all duration-300 overflow-hidden relative"
-            :class="activeTab === 1 ? 'bg-white dark:bg-neutral-950 shadow-2xl border-amber-500/40 scale-[1.01]' : 'bg-white/50 dark:bg-neutral-900/30 hover:dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800'"
-            data-aos="fade-up" data-aos-duration="600"
-          >
-            <div x-show="activeTab === 1" class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-amber-600"></div>
-            <button @click="activeTab = (activeTab === 1 ? null : 1)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none cursor-pointer group">
-              <div class="flex items-center gap-6">
-                <span class="text-sm font-mono text-neutral-400 font-bold">01</span>
-                <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500">
-                  <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                </div>
-                <h3 class="text-xl md:text-2xl font-extrabold group-hover:text-amber-500 transition-colors">Futuristic Web Design Layouts</h3>
-              </div>
-              <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300 shrink-0 ml-4" :class="activeTab === 1 ? 'rotate-180 text-amber-500' : ''"></i>
-            </button>
-            <div class="accordion-body" :class="activeTab === 1 ? 'open' : ''">
-              <div class="accordion-inner px-6 pb-8 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-600 dark:text-neutral-300">
-                <p class="leading-relaxed mb-6">
-                  Designing ultra-modern landing layouts, interactive digital grids, luxury user experience guides, and custom front-end assemblies tailored to stand out on ultra-wide desktop monitors in Valletta node active matrixes.
-                </p>
-                <div class="flex flex-col gap-2">
-                  <h4 class="text-xs font-mono font-bold text-neutral-400">Framework tools &amp; pipelines:</h4>
-                  <div class="flex flex-wrap gap-2 pt-1">
-                    <span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Framer Components</span>
-                    <span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Tailwind Design Pack</span>
-                    <span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Figma Vectors Mapping</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        
+        <!-- Left static intro column -->
+        <div class="lg:col-span-4 lg:sticky lg:top-24 flex flex-col gap-8" data-aos="fade-right" data-aos-duration="700">
+          <div>
+            <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500" /> Services & Capabilities
+            </p>
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">What do I best?</h2>
+            <p class="text-neutral-600 dark:text-neutral-300 font-sans mt-4 text-sm leading-relaxed">
+              We lead brands, ecosystems, and visual assets—engineering custom design models, responsive systems, and organic acquisition funnels.
+            </p>
           </div>
 
-          <!-- Service 2 -->
-          <div
-            class="rounded-3xl border transition-all duration-300 overflow-hidden relative"
-            :class="activeTab === 2 ? 'bg-white dark:bg-neutral-950 shadow-2xl border-amber-500/40 scale-[1.01]' : 'bg-white/50 dark:bg-neutral-900/30 hover:dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800'"
-            data-aos="fade-up" data-aos-duration="600" data-aos-delay="100"
-          >
-            <div x-show="activeTab === 2" class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-amber-600"></div>
-            <button @click="activeTab = (activeTab === 2 ? null : 2)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none cursor-pointer group">
-              <div class="flex items-center gap-6">
-                <span class="text-sm font-mono text-neutral-400 font-bold">02</span>
-                <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500">
-                  <i data-lucide="code" class="w-5 h-5"></i>
-                </div>
-                <h3 class="text-xl md:text-2xl font-extrabold group-hover:text-amber-500 transition-colors">Interface Architecture Engineering</h3>
-              </div>
-              <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300 shrink-0 ml-4" :class="activeTab === 2 ? 'rotate-180 text-amber-500' : ''"></i>
-            </button>
-            <div class="accordion-body" :class="activeTab === 2 ? 'open' : ''">
-              <div class="accordion-inner px-6 pb-8 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-600 dark:text-neutral-300">
-                <p class="leading-relaxed mb-6">
-                  Converting elaborate digital aesthetics into bulletproof, responsive React applications. Handcrafted clean custom hooks, stabilized states, and optimized code splitting without unrequested bloating modules.
-                </p>
-                <div class="flex flex-col gap-2">
-                  <h4 class="text-xs font-mono font-bold text-neutral-400">Framework tools &amp; pipelines:</h4>
-                  <div class="flex flex-wrap gap-2 pt-1">
-                    <span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">TypeScript Safe Mode</span>
-                    <span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">React Vite Pipelines</span>
-                    <span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Micro Interactions CSS</span>
-                  </div>
-                </div>
+          <div class="hidden lg:block rounded-3xl bg-[#fafafa] dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 p-5 shadow-xl">
+            <div class="relative w-full h-[230px] rounded-2xl overflow-hidden mb-4 bg-black">
+              <img src="./src/assets/images/cyber_tech_core_1781269848111.jpg" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1541462608141-2ff030de4a40?auto=format&fit=crop&w=400&q=80'">
+              <div class="absolute bottom-4 left-4">
+                <span class="px-2.5 py-1 bg-amber-500 text-black font-semibold font-mono text-[9px] uppercase tracking-wider rounded-full">Valletta Core</span>
               </div>
             </div>
-          </div>
-
-          <!-- Service 3 -->
-          <div
-            class="rounded-3xl border transition-all duration-300 overflow-hidden relative"
-            :class="activeTab === 3 ? 'bg-white dark:bg-neutral-950 shadow-2xl border-amber-500/40 scale-[1.01]' : 'bg-white/50 dark:bg-neutral-900/30 hover:dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800'"
-            data-aos="fade-up" data-aos-duration="600" data-aos-delay="200"
-          >
-            <div x-show="activeTab === 3" class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-amber-600"></div>
-            <button @click="activeTab = (activeTab === 3 ? null : 3)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none cursor-pointer group">
-              <div class="flex items-center gap-6">
-                <span class="text-sm font-mono text-neutral-400 font-bold">03</span>
-                <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500">
-                  <i data-lucide="database" class="w-5 h-5"></i>
-                </div>
-                <h3 class="text-xl md:text-2xl font-extrabold group-hover:text-amber-500 transition-colors">Digital Branding &amp; Secure Data Matrices</h3>
-              </div>
-              <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300 shrink-0 ml-4" :class="activeTab === 3 ? 'rotate-180 text-amber-500' : ''"></i>
-            </button>
-            <div class="accordion-body" :class="activeTab === 3 ? 'open' : ''">
-              <div class="accordion-inner px-6 pb-8 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900 pt-5 text-neutral-600 dark:text-neutral-300">
-                <p class="leading-relaxed mb-6">
-                  Constructing comprehensive typography grids, custom brand assets collections, offline vector brand books, and integrated database structures containing secure parameters.
-                </p>
-                <div class="flex flex-col gap-2">
-                  <h4 class="text-xs font-mono font-bold text-neutral-400">Framework tools &amp; pipelines:</h4>
-                  <div class="flex flex-wrap gap-2 pt-1">
-                    <span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Prisma ORM Secure Mode</span>
-                    <span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Vector Scaling Grids</span>
-                    <span class="bg-neutral-900 text-neutral-300 text-[10px] font-mono px-2.5 py-1 rounded-lg">Security Rules Matrices</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div><!-- /col-span-8 -->
-
-        <!-- Side card -->
-        <div class="lg:col-span-4" data-aos="fade-left" data-aos-duration="700">
-          <div class="rounded-[36px] bg-[#121212] border border-neutral-800 p-6 text-white text-center flex flex-col justify-between h-[360px]">
-            <div class="relative w-full h-[180px] rounded-2xl overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=400&q=80"
-                alt="Malta node"
-                class="w-full h-full object-cover"
-              >
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-              <div class="absolute bottom-3 left-3 flex items-center gap-1.5">
-                <span class="px-2.5 py-1 bg-amber-500 text-black font-semibold font-mono text-[9px] uppercase tracking-wider rounded-full">Valletta, MT</span>
-              </div>
-            </div>
-            <div class="mt-4 text-left">
-              <h4 class="text-base font-bold">Blurr Systems Core</h4>
-              <p class="text-xs font-mono text-neutral-400">Secure Maltese Digital Station</p>
-            </div>
-            <button @click="triggerModal('contact')" class="w-full mt-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-amber-500 hover:text-amber-500 duration-300 cursor-pointer text-xs font-mono uppercase tracking-wider">
-              Enquire Connection
-            </button>
+            <h4 class="text-base font-extrabold">Blurr Systems</h4>
+            <p class="text-xs font-mono text-neutral-500">Advanced Systems Interface</p>
           </div>
         </div>
+
+        <!-- Right Dynamic Accordion List (8 Services generated via dry map template) -->
+        <div class="lg:col-span-8 flex flex-col gap-4">
+          <template x-for="(service, sIdx) in services" :key="service.id">
+            <div 
+              class="rounded-3xl border transition-all duration-400 overflow-hidden relative"
+              :class="activeService === service.id ? 'bg-white dark:bg-neutral-950 shadow-2xl shadow-amber-500/5 border-amber-500/40 scale-[1.01]' : 'bg-[#fafafa] dark:bg-[#121212] hover:bg-white dark:hover:bg-neutral-900 border-neutral-200 dark:border-neutral-800'"
+              data-aos="fade-up" :data-aos-delay="sIdx * 50" data-aos-duration="600"
+            >
+              <div x-show="activeService === service.id" class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-amber-600"></div>
+              
+              <button @click="activeService = (activeService === service.id ? null : service.id)" class="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none cursor-pointer group">
+                <div class="flex items-center gap-4 sm:gap-6">
+                  <span class="text-sm font-mono text-neutral-400 font-extrabold" x-text="service.number"></span>
+                  <div class="p-2.5 rounded-2xl bg-neutral-150 dark:bg-neutral-900 group-hover:bg-amber-500/10 transition-colors">
+                    <i :data-lucide="service.icon" class="w-5 h-5 text-amber-500"></i>
+                  </div>
+                  <div>
+                    <span class="text-[9px] font-mono font-bold text-amber-600 bg-amber-500/10 uppercase tracking-wider px-2 py-0.5 rounded-full" x-text="service.accent"></span>
+                    <h3 class="text-xl md:text-2xl font-extrabold mt-1 group-hover:text-amber-500 transition-colors" x-text="service.title"></h3>
+                  </div>
+                </div>
+                <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300" :class="activeService === service.id ? 'rotate-180 text-amber-500' : 'text-neutral-500'"></i>
+              </button>
+
+              <div x-show="activeService === service.id" x-transition:enter="transition-all ease-out duration-300" class="px-6 pb-6 md:px-8 md:pb-8 border-t border-neutral-100 dark:border-neutral-900/60 pt-5 text-neutral-600 dark:text-neutral-300">
+                <p class="text-sm md:text-base leading-relaxed mb-6" x-text="service.description"></p>
+                <div class="flex flex-col gap-2">
+                  <h4 class="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">Expertise Stack:</h4>
+                  <div class="flex flex-wrap gap-2 pt-1">
+                    <template x-for="tag in service.tags">
+                      <span class="text-[10px] bg-neutral-100 dark:bg-neutral-900 border border-neutral-250 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 px-2.5 py-1 rounded-lg font-mono" x-text="tag"></span>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ PROCESS ══════════════ -->
+  <!-- PROCESS PIPELINE -->
   <section id="process-section" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
     <div class="max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
         <div data-aos="fade-right" data-aos-duration="700">
           <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
-            <i data-lucide="git-branch" class="text-amber-500 w-4 h-4"></i> Operational Pipeline
+            <i data-lucide="git-branch" class="text-amber-500"></i> WORKFLOW
           </p>
           <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight">How The Core Builds</h2>
         </div>
         <p class="text-sm text-neutral-500 max-w-sm" data-aos="fade-left" data-aos-duration="700">
-          A streamlined four-stage workflow engineered for speed, clarity, and zero-friction delivery from Valletta.
+          Four stages of high-fidelity agile engineering tailored for zero-friction Valletta-rooted deliveries.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600">
-          <span class="text-5xl font-extrabold text-amber-500/20 absolute top-4 right-5 select-none">01</span>
+          <span class="text-5xl font-extrabold text-amber-500/20 absolute top-4 right-5">01</span>
           <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500 w-fit mb-5"><i data-lucide="search" class="w-5 h-5"></i></div>
-          <h3 class="text-lg font-bold mb-2">Discovery &amp; Mapping</h3>
-          <p class="text-sm text-neutral-500 leading-relaxed">Deep audit of goals, audiences, and competitive matrices to define the secure project scope.</p>
+          <h3 class="text-lg font-bold mb-2">Discovery</h3>
+          <p class="text-sm text-neutral-500">Deep scoping, competitor mapping, and data structural design defining final layout milestones.</p>
         </div>
         <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-          <span class="text-5xl font-extrabold text-amber-500/20 absolute top-4 right-5 select-none">02</span>
+          <span class="text-5xl font-extrabold text-amber-500/20 absolute top-4 right-5">02</span>
           <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500 w-fit mb-5"><i data-lucide="pencil-ruler" class="w-5 h-5"></i></div>
-          <h3 class="text-lg font-bold mb-2">Design &amp; Prototyping</h3>
-          <p class="text-sm text-neutral-500 leading-relaxed">Vector wireframes evolve into high-fidelity interactive Figma prototypes ready for review.</p>
+          <h3 class="text-lg font-bold mb-2">Prototyping</h3>
+          <p class="text-sm text-neutral-500">Transforming layout wireframes into crisp, high-fidelity clickable Figma designs.</p>
         </div>
         <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
-          <span class="text-5xl font-extrabold text-amber-500/20 absolute top-4 right-5 select-none">03</span>
+          <span class="text-5xl font-extrabold text-amber-500/20 absolute top-4 right-5">03</span>
           <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500 w-fit mb-5"><i data-lucide="terminal" class="w-5 h-5"></i></div>
-          <h3 class="text-lg font-bold mb-2">Build &amp; Integration</h3>
-          <p class="text-sm text-neutral-500 leading-relaxed">Pixel-accurate React + Tailwind builds with secure data layers and CMS integrations.</p>
+          <h3 class="text-lg font-bold mb-2">Engineering</h3>
+          <p class="text-sm text-neutral-500">Pixel-perfect React and Tailwind structures written natively with optimized scripts.</p>
         </div>
         <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600" data-aos-delay="300">
-          <span class="text-5xl font-extrabold text-amber-500/20 absolute top-4 right-5 select-none">04</span>
+          <span class="text-5xl font-extrabold text-amber-500/20 absolute top-4 right-5">04</span>
           <div class="p-2.5 rounded-2xl bg-amber-500/10 text-amber-500 w-fit mb-5"><i data-lucide="rocket" class="w-5 h-5"></i></div>
-          <h3 class="text-lg font-bold mb-2">Launch &amp; Support</h3>
-          <p class="text-sm text-neutral-500 leading-relaxed">Deployment, performance tuning, and ongoing Valletta-based support retainers.</p>
+          <h3 class="text-lg font-bold mb-2">Launch</h3>
+          <p class="text-sm text-neutral-500">Deployment, visual audit, caching presets configuration, and active support.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ PORTFOLIO ══════════════ -->
+  <!-- PORTFOLIO GRID -->
   <section id="portfolio-section" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
-    <div class="max-w-7xl mx-auto" x-data="{ currentCategory: 'All' }">
+    <div class="max-w-7xl mx-auto">
+      
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
         <div data-aos="fade-right" data-aos-duration="700">
           <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
-            <i data-lucide="layers" class="text-amber-500 w-4 h-4"></i> Selected Works
+            <i data-lucide="layers" class="text-amber-500"></i> Portfolio
           </p>
           <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight">Active Cyber Projects</h2>
         </div>
-        <div class="flex flex-wrap gap-1.5 bg-neutral-100 dark:bg-neutral-900 p-1.5 rounded-2xl border border-neutral-200 dark:border-neutral-800" data-aos="fade-left" data-aos-duration="700">
+
+        <!-- Filters -->
+        <div class="flex flex-wrap gap-1.5 bg-neutral-100 dark:bg-neutral-905 bg-neutral-100 dark:bg-neutral-900 p-1.5 rounded-2xl border border-neutral-200 dark:border-neutral-800" data-aos="fade-left" data-aos-duration="700">
           <template x-for="cat in ['All', 'Websites', 'UI/UX', 'Brand Guidelines']">
-            <button
+            <button 
               @click="currentCategory = cat"
-              :class="currentCategory === cat ? 'bg-amber-500 text-black shadow-md font-bold' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'"
+              :class="currentCategory === cat ? 'bg-amber-500 text-black shadow-md font-bold' : 'text-neutral-500 hover:text-neutral-850 dark:hover:text-white'"
               class="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer duration-200"
               x-text="cat"
             ></button>
@@ -619,109 +511,54 @@
         </div>
       </div>
 
+      <!-- Grid Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-        <div
-          x-show="currentCategory === 'All' || currentCategory === 'Websites'"
-          x-transition:enter="transition ease-out duration-300"
-          x-transition:enter-start="opacity-0 translate-y-4"
-          x-transition:enter-end="opacity-100 translate-y-0"
-          data-aos="fade-up" data-aos-duration="600"
-          @click="openProjectLightbox('TryHackMe Security Portal', 'Websites', 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80', 'Reconstruction of active business landing architecture featuring fully responsive cyber layouts, secure vector structures, and optimization vectors delta.', ['Framer Motion', 'TailwindCSS', 'React Layouts'])"
-          class="group relative rounded-[40px] overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-black h-[360px] md:h-[400px] flex flex-col justify-end p-6 md:p-8 cursor-pointer transition-transform duration-500 hover:-translate-y-1"
-        >
-          <div class="absolute inset-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale opacity-45 group-hover:opacity-75 group-hover:grayscale-0 duration-700 transition" alt="Security Portal UI">
-            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
+        <template x-for="proj in projects">
+          <div 
+            x-show="currentCategory === 'All' || currentCategory === proj.category"
+            x-transition:enter="transition ease-out duration-300"
+            @click="openProjectLightbox(proj)"
+            class="group relative rounded-[40px] overflow-hidden bg-black border border-neutral-200 dark:border-neutral-850 h-[340px] md:h-[400px] flex flex-col justify-end p-6 md:p-8 cursor-pointer transition-transform duration-500 hover:-translate-y-1"
+          >
+            <div class="absolute inset-0 z-0 overflow-hidden">
+              <img :src="proj.img" :alt="proj.title" class="w-full h-full object-cover scale-100 group-hover:scale-105 duration-700 transition opacity-45 group-hover:opacity-65 grayscale group-hover:grayscale-0" :onerror="`this.src='${proj.fallbackImg}'`" referrerPolicy="no-referrer">
+              <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
+            </div>
+            
+            <div class="relative z-10 space-y-2 text-white">
+              <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full w-fit block" x-text="proj.category"></span>
+              <h3 class="text-2xl font-extrabold group-hover:text-amber-500 duration-300" x-text="proj.title"></h3>
+              <p class="text-xs text-neutral-300" x-text="proj.desc"></p>
+              <div class="flex items-center justify-between border-t border-white/10 pt-4 mt-2">
+                <span class="flex gap-1">
+                  <template x-for="t in proj.tags.slice(0, 2)">
+                    <span class="text-[9px] font-mono text-neutral-400 bg-neutral-900 border border-neutral-800 px-2 py-0.5 rounded-lg" x-text="t"></span>
+                  </template>
+                </span>
+                <span class="text-xs font-mono text-amber-400 uppercase tracking-widest gap-1 flex items-center opacity-0 group-hover:opacity-100 transition-opacity">Explore <i data-lucide="eye" class="w-3.5 h-3.5"></i></span>
+              </div>
+            </div>
           </div>
-          <div class="relative z-10 space-y-2.5 text-white">
-            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">Websites</span>
-            <h3 class="text-2xl font-extrabold group-hover:text-amber-500 duration-300">TryHackMe Security Portal</h3>
-            <p class="text-neutral-400 text-sm">Custom layout deployment featuring advanced futuristic grids.</p>
-          </div>
-        </div>
-
-        <div
-          x-show="currentCategory === 'All' || currentCategory === 'Brand Guidelines'"
-          x-transition:enter="transition ease-out duration-300"
-          x-transition:enter-start="opacity-0 translate-y-4"
-          x-transition:enter-end="opacity-100 translate-y-0"
-          data-aos="fade-up" data-aos-duration="600" data-aos-delay="100"
-          @click="openProjectLightbox('Alpha Brand Guidelines System', 'Brand Guidelines', 'https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80', 'Consolidated vector typography scales, custom luxury logo alignments, style layouts, custom brand systems, and stationary matrices for Malta Corporate networks.', ['Identity Guides', 'Vector Packaging', 'Typographic Grids'])"
-          class="group relative rounded-[40px] overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-black h-[360px] md:h-[400px] flex flex-col justify-end p-6 md:p-8 cursor-pointer transition-transform duration-500 hover:-translate-y-1"
-        >
-          <div class="absolute inset-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1561070791-26c113006238?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale opacity-45 group-hover:opacity-75 group-hover:grayscale-0 duration-700 transition" alt="Brand Book">
-            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
-          </div>
-          <div class="relative z-10 space-y-2.5 text-white">
-            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">Brand Guidelines</span>
-            <h3 class="text-2xl font-extrabold group-hover:text-amber-500 duration-300">Alpha Brand Guidelines System</h3>
-            <p class="text-neutral-400 text-sm">Bespoke identity matrices built for Malta capital systems.</p>
-          </div>
-        </div>
-
-        <div
-          x-show="currentCategory === 'All' || currentCategory === 'UI/UX'"
-          x-transition:enter="transition ease-out duration-300"
-          x-transition:enter-start="opacity-0 translate-y-4"
-          x-transition:enter-end="opacity-100 translate-y-0"
-          data-aos="fade-up" data-aos-duration="600" data-aos-delay="200"
-          @click="openProjectLightbox('Vibe Messenger Glass UI', 'UI/UX', 'https://images.unsplash.com/photo-1541462608141-2ff030de4a40?auto=format&fit=crop&w=800&q=80', 'Premium glassmorphism dashboard modeling featuring transparent containers, soft neon highlights accents, and high fidelity transition parameters.', ['Glassmorphism Interface', 'Active Workflows', 'Dashboard Concept'])"
-          class="group relative rounded-[40px] overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-black h-[360px] md:h-[400px] flex flex-col justify-end p-6 md:p-8 cursor-pointer transition-transform duration-500 hover:-translate-y-1"
-        >
-          <div class="absolute inset-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1541462608141-2ff030de4a40?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale opacity-45 group-hover:opacity-75 group-hover:grayscale-0 duration-700 transition" alt="Glass UI">
-            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
-          </div>
-          <div class="relative z-10 space-y-2.5 text-white">
-            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">UI/UX</span>
-            <h3 class="text-2xl font-extrabold group-hover:text-amber-500 duration-300">Vibe Messenger Glass UI</h3>
-            <p class="text-neutral-400 text-sm">Glassmorphism parameters configured with sleek glows.</p>
-          </div>
-        </div>
-
-        <div
-          x-show="currentCategory === 'All' || currentCategory === 'Websites'"
-          x-transition:enter="transition ease-out duration-300"
-          x-transition:enter-start="opacity-0 translate-y-4"
-          x-transition:enter-end="opacity-100 translate-y-0"
-          data-aos="fade-up" data-aos-duration="600" data-aos-delay="300"
-          @click="openProjectLightbox('Luxury Timepieces E-Shop', 'Websites', 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80', 'Luxury headless eShop layout configured with precision, using full parallax movements, high-end layouts, and standalone checkout routines.', ['Headless eCommerce', 'Parallax Scrolling', 'Elegant Design'])"
-          class="group relative rounded-[40px] overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-black h-[360px] md:h-[400px] flex flex-col justify-end p-6 md:p-8 cursor-pointer transition-transform duration-500 hover:-translate-y-1"
-        >
-          <div class="absolute inset-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale opacity-45 group-hover:opacity-75 group-hover:grayscale-0 duration-700 transition" alt="eCommerce Concept">
-            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
-          </div>
-          <div class="relative z-10 space-y-2.5 text-white">
-            <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">Websites</span>
-            <h3 class="text-2xl font-extrabold group-hover:text-amber-500 duration-300">Luxury Timepieces E-Shop</h3>
-            <p class="text-neutral-400 text-sm">Shopify layout custom design optimized for dynamic frames.</p>
-          </div>
-        </div>
-
+        </template>
       </div>
+
     </div>
   </section>
 
-  <!-- ══════════════ ABOUT / BIO ══════════════ -->
+  <!-- BIO & TICKER -->
   <section id="about-section" class="relative py-16 md:py-24 bg-[#fafafa] dark:bg-neutral-900/15 border-t border-neutral-200 dark:border-neutral-800">
     <div class="max-w-7xl mx-auto px-4 md:px-12">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Visual core representation -->
         <div class="lg:col-span-5 relative flex justify-center" data-aos="fade-right" data-aos-duration="800">
-          <div class="relative w-80 h-[380px] md:w-96 md:h-[480px] rounded-[48px] overflow-hidden group shadow-2xl bg-black">
-            <img
-              src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=800&q=80"
-              class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-              alt="Maltese Systems"
-            >
+          <div class="relative w-80 h-[380px] md:w-96 md:h-[480px] rounded-[48px] overflow-hidden shadow-2xl bg-black">
+            <img src="./src/assets/images/cyber_tech_core_1781269848111.jpg" class="w-full h-full object-cover select-none" alt="Cyber Core Base" onerror="this.src='https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=800&q=80'">
             <div class="absolute bottom-6 left-6 right-6 z-20 bg-black/60 backdrop-blur-md px-5 py-4 rounded-3xl border border-white/10 flex items-center justify-between text-white">
               <div>
                 <h4 class="text-sm font-bold">340+ Cyber Deployments</h4>
-                <p class="text-[10px] font-mono tracking-wider text-neutral-300">SECURE NETWORKS ACTIVE</p>
+                <p class="text-[10px] font-mono tracking-wider text-neutral-350">VALLETTA NODES ACTIVE</p>
               </div>
-              <div class="flex gap-0.5 text-amber-500">
+              <div class="flex gap-0.5 text-amber-400">
                 <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
                 <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
                 <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
@@ -732,481 +569,342 @@
           </div>
         </div>
 
+        <!-- Bio text -->
         <div class="lg:col-span-7 space-y-6" data-aos="fade-left" data-aos-duration="800">
-          <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
-            <i data-lucide="sparkles" class="text-amber-500 w-4 h-4"></i> Corporate Bio
-          </p>
+          <p class="text-xs font-mono text-amber-500 uppercase tracking-widest flex items-center gap-2 mb-2"><i data-lucide="sparkles"></i> Corporate Bio</p>
           <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">Creative at the Core</h2>
-          <p class="text-amber-600 dark:text-amber-400 font-mono uppercase text-sm tracking-wider font-bold">Designer, Digital Strategist, Problem-Solver.</p>
-          <p class="text-neutral-600 dark:text-neutral-300 leading-relaxed">
-            With 13 years of dedication to complex digital visual designs, our Valletta design group integrates strict aesthetic standards with rapid engineering frameworks to build websites that enhance local conversion dynamics and brand statuses incomparably.
+          <p class="text-amber-650 dark:text-amber-400 font-mono uppercase text-sm tracking-widest font-bold">Designer, Digital Strategist, Problem-Solver.</p>
+          <p class="text-neutral-500 leading-relaxed">
+            With 13 years of execution in advanced digital visuals, our Valletta node integrates strict stylistic standards with rapid coding blueprints to build platforms that elevate local conversion statistics and corporate authority immensely.
           </p>
           <div class="flex flex-wrap gap-3">
-            <button @click="triggerModal('schedule')" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold px-5 py-3 rounded-2xl transition hover:scale-[1.02] cursor-pointer shadow-lg shadow-amber-500/10">
-              <i data-lucide="calendar" class="w-4 h-4"></i>
-              <span>Schedule a Call</span>
-            </button>
-            <button @click="triggerModal('contact')" class="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-900 px-5 py-3 rounded-2xl border border-neutral-200 dark:border-neutral-800 hover:border-amber-500/20 duration-300 cursor-pointer">
-              <i data-lucide="mail" class="w-4 h-4"></i>
-              <span>Launch Request</span>
-            </button>
+            <button @click="triggerModal('schedule')" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold px-5 py-3.5 rounded-2xl transition hover:scale-[1.02] cursor-pointer shadow-lg shadow-amber-500/10">Readiness Discovery</button>
+            <button @click="triggerModal('contact')" class="flex items-center gap-2 bg-neutral-150 dark:bg-neutral-900 border border-neutral-250 dark:border-neutral-850 px-5 py-3.5 rounded-2xl hover:border-amber-500/20 duration-300">Inquire Connection</button>
           </div>
         </div>
       </div>
 
-      <!-- Marquee ticker -->
+      <!-- Infinite marquee ticker -->
       <div class="relative w-full mt-16 md:mt-24 border-y border-neutral-200/60 dark:border-neutral-800/60 py-6 overflow-hidden" data-aos="fade-up" data-aos-duration="700">
-        <div class="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-[#fafafa] dark:from-neutral-950 to-transparent z-10 pointer-events-none"></div>
-        <div class="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-[#fafafa] dark:from-neutral-950 to-transparent z-10 pointer-events-none"></div>
-        <div class="flex whitespace-nowrap" aria-hidden="true">
-          <div class="flex shrink-0 gap-12 text-sm font-mono tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-bold animate-marquee">
-            <span>Maltese Engineering Visual Standards ✦</span>
+        <div class="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-white dark:from-neutral-950 to-transparent z-10"></div>
+        <div class="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-white dark:from-neutral-950 to-transparent z-10"></div>
+        <div class="flex whitespace-nowrap">
+          <div class="flex shrink-0 gap-12 text-xs font-mono tracking-widest text-neutral-500 uppercase font-bold animate-marquee">
+            <span>Maltese UI Engineering High Standards ✦</span>
             <span>13+ Years Design Experience ✦</span>
             <span>340+ High-End Projects Executed ✦</span>
-            <span>No Generic Templates Guaranteed ✦</span>
-            <span>Awwwards Nominations ✦</span>
+            <span>Zero Generic Templates ✦</span>
           </div>
-          <div class="flex shrink-0 gap-12 text-sm font-mono tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-bold animate-marquee" aria-hidden="true">
-            <span>Maltese Engineering Visual Standards ✦</span>
+          <div class="flex shrink-0 gap-12 text-xs font-mono tracking-widest text-neutral-500 uppercase font-bold animate-marquee ml-12">
+            <span>Maltese UI Engineering High Standards ✦</span>
             <span>13+ Years Design Experience ✦</span>
             <span>340+ High-End Projects Executed ✦</span>
-            <span>No Generic Templates Guaranteed ✦</span>
-            <span>Awwwards Nominations ✦</span>
+            <span>Zero Generic Templates ✦</span>
           </div>
         </div>
       </div>
+
     </div>
   </section>
 
-  <!-- ══════════════ TESTIMONIALS ══════════════ -->
+  <!-- TESTIMONIALS -->
   <section id="testimonials-section" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
     <div class="max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
         <div data-aos="fade-right" data-aos-duration="700">
           <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
-            <i data-lucide="message-circle" class="text-amber-500 w-4 h-4"></i> Client Feedback
+            <i data-lucide="message-circle" class="text-amber-500"></i> Client Feedback
           </p>
           <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight">Trusted Across Networks</h2>
         </div>
         <p class="text-sm text-neutral-500 max-w-sm" data-aos="fade-left" data-aos-duration="700">
-          Direct verified feedback from clients in security, fintech, and luxury commerce sectors.
+          Verified system diagnostics reported directly from partner nodes in fintech and commerce sectors.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 flex flex-col gap-4 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600">
-          <div class="flex gap-0.5 text-amber-500">
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-          </div>
-          <p class="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed flex-1">
-            "Blurr rebuilt our security portal end-to-end. The transitions feel premium, the layout is razor sharp, and our conversion delta climbed within weeks of launch."
-          </p>
-          <div class="flex items-center gap-3 pt-2 border-t border-neutral-200 dark:border-neutral-800">
-            <div class="w-10 h-10 rounded-full bg-amber-500/15 flex items-center justify-center text-amber-500 font-bold font-mono text-sm shrink-0">JM</div>
-            <div>
-              <p class="text-sm font-bold">Jonas Mercieca</p>
-              <p class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">CTO, TryHackMe Security</p>
-            </div>
+        <div class="p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-805 bg-[#fafafa] dark:bg-neutral-900/30 flex flex-col gap-4 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600">
+          <div class="flex gap-0.5 text-amber-500"><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i></div>
+          <p class="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed flex-1">"Blurr engineered our secure directory. The transitions feel premium, the layouts are razor clean, and acquisition grew within weeks."</p>
+          <div class="flex items-center gap-3 pt-2 border-t border-neutral-200 dark:border-neutral-850">
+            <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center font-bold text-amber-500 font-sans">JM</div>
+            <div><p class="text-sm font-bold">Jonas Mercieca</p><p class="text-[9px] font-mono text-neutral-400 uppercase">CTO, TryHackMe</p></div>
           </div>
         </div>
-
-        <div class="p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 flex flex-col gap-4 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-          <div class="flex gap-0.5 text-amber-500">
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-          </div>
-          <p class="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed flex-1">
-            "Our brand guidelines system finally feels cohesive across every touchpoint. The vector packaging and typographic grids are simply pristine."
-          </p>
-          <div class="flex items-center gap-3 pt-2 border-t border-neutral-200 dark:border-neutral-800">
-            <div class="w-10 h-10 rounded-full bg-amber-500/15 flex items-center justify-center text-amber-500 font-bold font-mono text-sm shrink-0">SA</div>
-            <div>
-              <p class="text-sm font-bold">Sara Azzopardi</p>
-              <p class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Brand Lead, Alpha Holdings</p>
-            </div>
+        <div class="p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-805 bg-[#fafafa] dark:bg-neutral-900/30 flex flex-col gap-4 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+          <div class="flex gap-0.5 text-amber-500"><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i></div>
+          <p class="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed flex-1">"The brand manuals and assets alignments they delivered finally made our identity scalable across Europe nodes."</p>
+          <div class="flex items-center gap-3 pt-2 border-t border-neutral-200 dark:border-neutral-850">
+            <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center font-bold text-amber-500 font-sans">SA</div>
+            <div><p class="text-sm font-bold">Sara Azzopardi</p><p class="text-[9px] font-mono text-neutral-400 uppercase">Brand, Alpha Group</p></div>
           </div>
         </div>
-
-        <div class="p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 flex flex-col gap-4 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
-          <div class="flex gap-0.5 text-amber-500">
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-          </div>
-          <p class="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed flex-1">
-            "The headless eShop they engineered handles parallax and checkout flawlessly. Page speed and elegance rarely come together this well."
-          </p>
-          <div class="flex items-center gap-3 pt-2 border-t border-neutral-200 dark:border-neutral-800">
-            <div class="w-10 h-10 rounded-full bg-amber-500/15 flex items-center justify-center text-amber-500 font-bold font-mono text-sm shrink-0">RC</div>
-            <div>
-              <p class="text-sm font-bold">Ryan Camilleri</p>
-              <p class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Founder, Luxury Timepieces Co.</p>
-            </div>
+        <div class="p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-805 bg-[#fafafa] dark:bg-neutral-900/30 flex flex-col gap-4 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+          <div class="flex gap-0.5 text-amber-500"><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i></div>
+          <p class="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed flex-1">"The headless clock e-shop looks beautiful. Parallax scroll movements and instant checkout pipelines are flawless."</p>
+          <div class="flex items-center gap-3 pt-2 border-t border-neutral-200 dark:border-neutral-850">
+            <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center font-bold text-amber-500 font-sans">RC</div>
+            <div><p class="text-sm font-bold">Ryan Camilleri</p><p class="text-[9px] font-mono text-neutral-400 uppercase">Founder, Luxury horology</p></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ AWARDS ══════════════ -->
+  <!-- HONORS AND REVIEWS SECTION -->
   <section id="awards-section" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
     <div class="max-w-5xl mx-auto">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12">
         <div data-aos="fade-right" data-aos-duration="700">
           <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 tracking-widest uppercase flex items-center gap-2 mb-2">
-            <i data-lucide="award" class="text-amber-500 w-4 h-4"></i> Hall of Fame
+            <i data-lucide="award" class="text-amber-500"></i> Honors
           </p>
-          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Awards &amp; Recognition</h2>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Awards & Recognition</h2>
         </div>
-        <p class="text-sm text-neutral-500 max-w-sm" data-aos="fade-left" data-aos-duration="700">Jury achievements and designer of the day mentions celebrating high-end Maltese interactive layouts.</p>
+        <p class="text-sm text-neutral-500 max-w-sm" data-aos="fade-left" data-aos-duration="700">Jury designations celebrating visual interface elegance and advanced micro alignments.</p>
       </div>
 
+      <!-- Awards Table rendered dynamically via clean template looping to keep source size extremely tiny -->
       <div class="border border-neutral-200 dark:border-neutral-800 rounded-3xl bg-[#fafafa]/50 dark:bg-neutral-900/10 overflow-hidden" data-aos="fade-up" data-aos-duration="700">
         <div class="grid grid-cols-12 px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 text-xs font-mono text-neutral-400 uppercase tracking-widest bg-[#fafafa] dark:bg-neutral-900/60 font-bold">
-          <div class="col-span-6 md:col-span-5">Award &amp; Honor Title</div>
-          <div class="col-span-6 md:col-span-4">Issuing Authority</div>
+          <div class="col-span-6 md:col-span-5">Award / Honor Title</div>
+          <div class="col-span-6 md:col-span-4">Issuing Platform</div>
           <div class="hidden md:block md:col-span-3 text-right">Date of Issue</div>
         </div>
+
         <div class="divide-y divide-neutral-200 dark:divide-neutral-800">
-          <div class="grid grid-cols-12 items-center px-6 py-5 hover:bg-neutral-50 dark:hover:bg-neutral-900/40 duration-200">
-            <div class="col-span-12 md:col-span-5 flex items-center gap-3">
-              <div class="p-2 bg-amber-500/15 rounded-xl text-amber-500 shrink-0"><i data-lucide="trophy" class="w-4 h-4"></i></div>
-              <span class="font-bold text-neutral-900 dark:text-white">WD Website Favorite</span>
+          <template x-for="(award, aSIdx) in awards" :key="aSIdx">
+            <div class="grid grid-cols-12 items-center px-6 py-5 hover:bg-neutral-50 dark:hover:bg-neutral-900/40 duration-200">
+              <div class="col-span-12 md:col-span-5 flex items-center gap-3">
+                <div class="p-2 bg-amber-500/15 rounded-xl text-amber-500">
+                  <i :data-lucide="award.icon" class="w-4 h-4"></i>
+                </div>
+                <span class="font-bold text-neutral-900 dark:text-white" x-text="award.title"></span>
+              </div>
+              <div class="col-span-6 md:col-span-4 text-xs font-mono text-neutral-500 mt-1 md:mt-0" x-text="award.issuer"></div>
+              <div class="col-span-6 md:col-span-3 text-right text-xs font-mono text-neutral-400 mt-1 md:mt-0" x-text="award.date"></div>
             </div>
-            <div class="col-span-6 md:col-span-4 text-xs font-mono text-neutral-500 mt-1 md:mt-0">WD Design Awards</div>
-            <div class="col-span-6 md:col-span-3 text-right text-xs font-mono text-neutral-400 mt-1 md:mt-0">April 3, 2026</div>
-          </div>
-          <div class="grid grid-cols-12 items-center px-6 py-5 hover:bg-neutral-50 dark:hover:bg-neutral-900/40 duration-200">
-            <div class="col-span-12 md:col-span-5 flex items-center gap-3">
-              <div class="p-2 bg-amber-500/15 rounded-xl text-amber-500 shrink-0"><i data-lucide="crown" class="w-4 h-4"></i></div>
-              <span class="font-bold text-neutral-900 dark:text-white">Project of The Day Gold</span>
-            </div>
-            <div class="col-span-6 md:col-span-4 text-xs font-mono text-neutral-500 mt-1 md:mt-0">Astonishing Awards</div>
-            <div class="col-span-6 md:col-span-3 text-right text-xs font-mono text-neutral-400 mt-1 md:mt-0">March 22, 2026</div>
-          </div>
-          <div class="grid grid-cols-12 items-center px-6 py-5 hover:bg-neutral-50 dark:hover:bg-neutral-900/40 duration-200">
-            <div class="col-span-12 md:col-span-5 flex items-center gap-3">
-              <div class="p-2 bg-amber-500/15 rounded-xl text-amber-500 shrink-0"><i data-lucide="globe" class="w-4 h-4"></i></div>
-              <span class="font-bold text-neutral-900 dark:text-white">Site of the Day Nominee</span>
-            </div>
-            <div class="col-span-6 md:col-span-4 text-xs font-mono text-neutral-500 mt-1 md:mt-0">Awwwards International</div>
-            <div class="col-span-6 md:col-span-3 text-right text-xs font-mono text-neutral-400 mt-1 md:mt-0">March 21, 2026</div>
-          </div>
+          </template>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ EXPERIENCE ══════════════ -->
+  <!-- CAREER TIMELINE -->
   <section id="experience-section" class="relative py-16 md:py-24 bg-[#fafafa] dark:bg-neutral-900/20 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
     <div class="max-w-4xl mx-auto">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-12">
         <div data-aos="fade-right" data-aos-duration="700">
           <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center gap-2 mb-2">
-            <i data-lucide="briefcase" class="text-amber-500 w-4 h-4"></i> Career Milestones
+            <i data-lucide="briefcase" class="text-amber-500"></i> Career Milestones
           </p>
           <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Work Experience</h2>
         </div>
-        <button @click="triggerModal('contact')" class="px-5 py-3 border border-amber-500/30 text-amber-600 hover:border-amber-500 rounded-2xl text-xs font-mono tracking-wider uppercase font-semibold transition-colors duration-300" data-aos="fade-left" data-aos-duration="700">
-          Download Full CV
-        </button>
       </div>
 
       <div class="space-y-6">
         <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 flex flex-col md:flex-row gap-6 items-start hover:shadow-lg duration-300" data-aos="fade-up" data-aos-duration="600">
-          <div class="md:w-1/4 shrink-0 font-mono text-sm text-neutral-400 font-bold">2025 – Current</div>
+          <div class="md:w-1/4 shrink-0 font-mono text-sm text-neutral-400 font-bold">2025 - Current</div>
           <div class="md:w-3/4 space-y-2">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <h3 class="text-lg font-bold">Lead Creative Designer</h3>
               <span class="text-xs font-mono px-3 py-1 bg-neutral-100 dark:bg-neutral-900 rounded-xl">TryHackMe Security LLC</span>
             </div>
-            <p class="text-sm text-neutral-500">Spearheading modern landing layouts, product guidelines architectures, and direct frontend visual conversions. User engagement optimization initiatives resulting in a 35% conversion delta increase.</p>
+            <p class="text-sm text-neutral-500">Spearheading modern landing layouts, product guidelines architectures, and direct frontend visual conversions. Increased engagement by 35% across primary portal funnels.</p>
           </div>
         </div>
+
         <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 flex flex-col md:flex-row gap-6 items-start hover:shadow-lg duration-300" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
-          <div class="md:w-1/4 shrink-0 font-mono text-sm text-neutral-400 font-bold">2023 – Current</div>
+          <div class="md:w-1/4 shrink-0 font-mono text-sm text-neutral-400 font-bold">2023 - Current</div>
           <div class="md:w-3/4 space-y-2">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <h3 class="text-lg font-bold">Founder &amp; Creative Director</h3>
+              <h3 class="text-lg font-bold">Founder & Creative Director</h3>
               <span class="text-xs font-mono px-3 py-1 bg-neutral-100 dark:bg-neutral-900 rounded-xl">Blurr Creative™</span>
             </div>
-            <p class="text-sm text-neutral-500">Designing premium full-spectrum digital assets, bespoke Framer components, e-commerce architectures, and vector branding guidelines systems for an elite global client roster.</p>
-          </div>
-        </div>
-        <div class="relative p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 flex flex-col md:flex-row gap-6 items-start hover:shadow-lg duration-300" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
-          <div class="md:w-1/4 shrink-0 font-mono text-sm text-neutral-400 font-bold">2021 – 2023</div>
-          <div class="md:w-3/4 space-y-2">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <h3 class="text-lg font-bold">Senior UI/UX Architect</h3>
-              <span class="text-xs font-mono px-3 py-1 bg-neutral-100 dark:bg-neutral-900 rounded-xl">VibeStudio Valletta</span>
-            </div>
-            <p class="text-sm text-neutral-500">Formulated custom structural user flows, design assets libraries, and interactive digital interfaces for decentralized social nodes and premium mobile platforms.</p>
+            <p class="text-sm text-neutral-500">Designing premium visual layouts, bespoke interactive components, scale database schemes, and vector brand book guides for a curated roster of tech companies.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ FAQ ══════════════ -->
+  <!-- FAQ -->
   <section id="faq-section" class="relative w-full py-16 md:py-24 bg-white dark:bg-neutral-950 px-4 md:px-12 border-t border-neutral-200 dark:border-neutral-800">
     <div class="max-w-4xl mx-auto" x-data="{ openFaq: null }">
       <div class="mb-12 text-center" data-aos="fade-up" data-aos-duration="700">
         <p class="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-widest flex items-center justify-center gap-2 mb-2">
-          <i data-lucide="circle-help" class="text-amber-500 w-4 h-4"></i> Frequently Transmitted
+          <i data-lucide="circle-help" class="text-amber-500"></i> FAQ
         </p>
         <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight">Common Queries</h2>
       </div>
 
       <div class="space-y-4">
-        <template x-for="(faq, i) in [
-          { q: 'What is the typical project turnaround time?',       a: 'Most landing layout builds run between 2–4 weeks depending on scope, with full branding and database integration projects spanning 6–8 weeks.' },
-          { q: 'Do you work with clients outside Malta?',            a: 'Yes — our Valletta node operates fully remotely with secure async workflows for clients across Europe, the UK, and beyond.' },
-          { q: 'What does the design process include?',              a: 'Discovery and mapping, vector prototyping, full responsive engineering builds, and a launch phase with ongoing support retainers — see our four-stage pipeline above.' },
-          { q: 'Can you maintain or expand an existing site?',       a: 'Absolutely. We regularly audit, refactor, and extend existing codebases — adding secure data matrices, new components, and interactive transitions without disrupting production.' }
-        ]" :key="i">
-          <div
-            class="rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 overflow-hidden"
-            data-aos="fade-up" data-aos-duration="600" :data-aos-delay="i * 100"
-          >
-            <button @click="openFaq = (openFaq === i ? null : i)" class="w-full flex items-center justify-between p-6 text-left cursor-pointer group">
-              <span class="font-bold group-hover:text-amber-500 transition-colors pr-4" x-text="faq.q"></span>
-              <i data-lucide="plus" class="w-4 h-4 transition-transform duration-300 shrink-0" :class="openFaq === i ? 'rotate-45 text-amber-500' : ''"></i>
-            </button>
-            <div class="accordion-body" :class="openFaq === i ? 'open' : ''">
-              <div class="accordion-inner px-6 pb-6 text-sm text-neutral-500 leading-relaxed" x-text="faq.a"></div>
-            </div>
+        <div class="rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 overflow-hidden" data-aos="fade-up" data-aos-duration="600">
+          <button @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full flex items-center justify-between p-6 text-left cursor-pointer group">
+            <span class="font-bold group-hover:text-amber-500 transition-colors">What is the typical project turnaround time?</span>
+            <i data-lucide="plus" class="w-4 h-4 transition-transform duration-300 shrink-0" :class="openFaq === 1 ? 'rotate-45 text-amber-500' : ''"></i>
+          </button>
+          <div x-show="openFaq === 1" class="px-6 pb-6 text-sm text-neutral-500 leading-relaxed">
+            Most custom landing layout builds complete within 2-4 weeks, with full branding guides and security matrices spanning 6-8 weeks.
           </div>
-        </template>
+        </div>
+
+        <div class="rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-[#fafafa] dark:bg-neutral-900/30 overflow-hidden" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+          <button @click="openFaq = (openFaq === 2 ? null : 2)" class="w-full flex items-center justify-between p-6 text-left cursor-pointer group">
+            <span class="font-bold group-hover:text-amber-500 transition-colors">Do you work with clients outside Malta?</span>
+            <i data-lucide="plus" class="w-4 h-4 transition-transform duration-300 shrink-0" :class="openFaq === 2 ? 'rotate-45 text-amber-500' : ''"></i>
+          </button>
+          <div x-show="openFaq === 2" class="px-6 pb-6 text-sm text-neutral-500 leading-relaxed">
+            Yes — our Valletta nodes operate remotely with clean async schedules matching partner timezones across the globe.
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ FLOATING NAV ══════════════ -->
+  <!-- NAVIGATION FLOATER -->
   <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-fit px-4">
-    <nav class="bg-black/90 dark:bg-neutral-950/95 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 flex items-center gap-6 shadow-2xl">
-      <a href="#hero-section" @click.prevent="document.getElementById('hero-section').scrollIntoView({behavior:'smooth'}); activeSection='home'" :class="activeSection === 'home' ? 'text-amber-400' : 'text-neutral-400 hover:text-white'" class="p-1.5 duration-200 transition">
+    <nav class="bg-black/90 dark:bg-neutral-950/95 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 flex items-center gap-7 shadow-2xl">
+      <a href="#hero-section" @click="activeSection = 'home'" :class="activeSection === 'home' ? 'text-amber-400' : 'text-neutral-400 hover:text-white'" class="p-1.5 duration-200 transition">
         <i data-lucide="home" class="w-4 h-4"></i>
       </a>
-      <a href="#services-section" @click.prevent="document.getElementById('services-section').scrollIntoView({behavior:'smooth'}); activeSection='skills'" :class="activeSection === 'skills' ? 'text-amber-400' : 'text-neutral-400 hover:text-white'" class="text-xs uppercase font-bold tracking-wider duration-200">Skills</a>
-      <a href="#about-section" @click.prevent="document.getElementById('about-section').scrollIntoView({behavior:'smooth'}); activeSection='about'" :class="activeSection === 'about' ? 'text-amber-400' : 'text-neutral-400 hover:text-white'" class="text-xs uppercase font-bold tracking-wider duration-200">About</a>
-      <a href="#portfolio-section" @click.prevent="document.getElementById('portfolio-section').scrollIntoView({behavior:'smooth'}); activeSection='portfolio'" :class="activeSection === 'portfolio' ? 'text-amber-400' : 'text-neutral-400 hover:text-white'" class="text-xs uppercase font-bold tracking-wider duration-200">Portfolio</a>
-      <a href="#testimonials-section" @click.prevent="document.getElementById('testimonials-section').scrollIntoView({behavior:'smooth'}); activeSection='reviews'" :class="activeSection === 'reviews' ? 'text-amber-400' : 'text-neutral-400 hover:text-white'" class="hidden sm:inline text-xs uppercase font-bold tracking-wider duration-200">Reviews</a>
-      <button @click="triggerModal('contact')" class="bg-amber-500 hover:bg-amber-600 text-black text-xs font-extrabold uppercase tracking-widest px-4 py-2.5 rounded-full duration-300 shadow-md cursor-pointer">
-        Contact me
-      </button>
+      <a href="#services-section" @click="activeSection = 'skills'" :class="activeSection === 'skills' ? 'text-amber-400' : 'text-neutral-400/80 hover:text-white'" class="text-xs uppercase font-bold tracking-wider duration-200">Skills</a>
+      <a href="#portfolio-section" @click="activeSection = 'portfolio'" :class="activeSection === 'portfolio' ? 'text-amber-400' : 'text-neutral-400/80 hover:text-white'" class="text-xs uppercase font-bold tracking-wider duration-200">Portfolio</a>
+      <a href="#about-section" @click="activeSection = 'about'" :class="activeSection === 'about' ? 'text-amber-400' : 'text-neutral-400/80 hover:text-white'" class="text-xs uppercase font-bold tracking-wider duration-200 font-sans">About</a>
+      <a href="#testimonials-section" @click="activeSection = 'reviews'" :class="activeSection === 'reviews' ? 'text-amber-400' : 'text-neutral-400/80 hover:text-white'" class="hidden sm:inline text-xs uppercase font-bold tracking-wider duration-200">Reviews</a>
+      <button @click="triggerModal('contact')" class="bg-amber-500 hover:bg-amber-600 text-black text-xs font-extrabold uppercase tracking-widest px-4 py-2.5 rounded-full duration-300 shadow-md cursor-pointer">Contact</button>
     </nav>
   </div>
 
-  <!-- ══════════════ CONTACT MODAL ══════════════ -->
-  <div x-show="isContactOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div
-      @click="isContactOpen = false"
-      x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-      x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-      class="absolute inset-0 bg-black/60 backdrop-blur-sm"
-    ></div>
-    <div
-      x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-      x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-      class="relative w-full max-w-lg rounded-3xl bg-neutral-950 border border-neutral-800 p-6 text-white shadow-2xl z-10 space-y-4"
-    >
+  <!-- CONTACT & SCHEDULING POPUP LAYERS -->
+  <div x-show="isContactOpen" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div x-show="isContactOpen" x-transition @click="isContactOpen = false" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    
+    <div x-show="isContactOpen" x-transition class="relative w-full max-w-lg overflow-hidden rounded-3xl bg-neutral-950 border border-neutral-800 p-6 text-white shadow-2xl z-10 space-y-4">
       <div class="flex items-center justify-between border-b border-neutral-800 pb-4">
-        <h3 class="text-xl font-bold" x-text="modalType === 'schedule' ? 'Schedule a discovery call' : 'Launch a project together'"></h3>
-        <button @click="isContactOpen = false" class="text-neutral-400 hover:text-white p-2 rounded-full hover:bg-neutral-900 transition-colors">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <h3 class="text-xl font-bold font-sans" x-text="modalType === 'schedule' ? 'Schedule a Discovery Call' : 'Launch a Secure Project'"></h3>
+        <button @click="isContactOpen = false" class="text-neutral-400 hover:text-white p-2 rounded-full hover:bg-neutral-905"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <div class="space-y-4">
+
+      <form @submit.prevent="alert('Request dispatched securely to Valletta Core.'); isContactOpen = false;" class="space-y-4">
         <div>
-          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1.5">Name</label>
-          <input type="text" placeholder="Wade Warren" class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 placeholder-neutral-600 text-sm focus:outline-none focus:border-amber-500 transition-colors">
+          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1">Name</label>
+          <input type="text" required placeholder="John Miller" class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
         </div>
         <div>
-          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1.5">Email Address</label>
-          <input type="email" placeholder="wade@company.com" class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 placeholder-neutral-600 text-sm focus:outline-none focus:border-amber-500 transition-colors">
+          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1">Email Address</label>
+          <input type="email" required placeholder="john@networks.com" class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
         </div>
         <div x-show="modalType === 'schedule'">
-          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1.5">Preferred Date / Time</label>
+          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1">Preferred Timeframe</label>
           <div class="grid grid-cols-2 gap-2">
-            <input type="date" class="bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500 transition-colors text-neutral-300">
-            <input type="time" class="bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500 transition-colors text-neutral-300">
+            <input type="date" class="bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs focus:outline-none text-neutral-300">
+            <input type="time" class="bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs focus:outline-none text-neutral-300">
           </div>
         </div>
         <div>
-          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1.5">Custom Message</label>
-          <textarea rows="3" placeholder="Tell our Valletta design core briefly about your operational ideas..." class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 placeholder-neutral-600 text-xs focus:outline-none focus:border-amber-500 resize-none transition-colors"></textarea>
+          <label class="block text-[10px] font-mono uppercase text-neutral-400 mb-1">Inquiry parameters</label>
+          <textarea rows="3" required placeholder="Briefly describe your layout goals..." class="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-amber-500 resize-none"></textarea>
         </div>
-        <button
-          @click="alert('Request received! We will send a packet in moments.'); isContactOpen = false;"
-          class="w-full py-3 bg-amber-500 text-black font-semibold rounded-xl hover:bg-amber-600 transition duration-300 cursor-pointer"
-        >Send Malta Core Inquiry</button>
-      </div>
+        <button type="submit" class="w-full py-3 bg-amber-500 text-black font-semibold rounded-xl hover:bg-amber-600 transition">Transmit Connection</button>
+      </form>
     </div>
   </div>
 
-  <!-- ══════════════ PROJECT LIGHTBOX ══════════════ -->
-  <div x-show="selectedProject" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div
-      @click="selectedProject = null"
-      x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-      x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-      class="absolute inset-0 bg-black/90 backdrop-blur-md"
-    ></div>
-    <div
-      x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-      x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-      class="relative w-full max-w-3xl rounded-[36px] bg-neutral-950 border border-neutral-800 text-white shadow-2xl z-10 flex flex-col md:flex-row max-h-[85vh] overflow-y-auto"
-    >
-      <button @click="selectedProject = null" class="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 hover:bg-neutral-900 text-white border border-white/10 transition-colors">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-      <div class="w-full md:w-1/2 h-64 md:h-auto min-h-[250px] relative">
-        <img :src="selectedProject?.img" class="w-full h-full object-cover" alt="Selected project">
+  <!-- PORTFOLIO LIGHTBOX -->
+  <div x-show="selectedProject" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div x-show="selectedProject" x-transition @click="selectedProject = null" class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+    
+    <div x-show="selectedProject" x-transition class="relative w-full max-w-3xl overflow-hidden rounded-[36px] bg-neutral-950 border border-neutral-800 text-white shadow-2xl z-10 flex flex-col md:flex-row max-h-[85vh] overflow-y-auto">
+      <button @click="selectedProject = null" class="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 hover:bg-neutral-950 text-white border border-white/10"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <div class="w-full md:w-1/2 h-64 md:h-auto min-h-[250px] relative bg-neutral-900">
+        <img :src="selectedProject?.img" class="w-full h-full object-cover" :onerror="`this.src='${selectedProject?.fallbackImg}'`">
         <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-neutral-950 via-transparent to-transparent"></div>
       </div>
+      
       <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between space-y-4">
         <div>
           <span class="text-[10px] font-mono font-bold text-amber-500 uppercase tracking-widest bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20" x-text="selectedProject?.category"></span>
-          <h3 class="text-2xl font-bold tracking-tight mt-3" x-text="selectedProject?.title"></h3>
+          <h3 class="text-2xl font-bold tracking-tight mt-3 text-white" x-text="selectedProject?.title"></h3>
           <p class="text-neutral-400 text-sm mt-3 leading-relaxed" x-text="selectedProject?.desc"></p>
-          <div class="grid grid-cols-2 gap-4 border-y border-neutral-900 my-4 py-4 text-[10px] font-mono text-neutral-400">
-            <div>
-              <p class="text-neutral-500 uppercase">Production Year</p>
-              <p class="text-neutral-200 font-semibold mt-1">2026 Edition</p>
-            </div>
-            <div>
-              <p class="text-neutral-500 uppercase">Framework Target</p>
-              <p class="text-neutral-200 font-semibold mt-1">Valletta Node</p>
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <template x-for="tag in selectedProject?.tags">
-              <span class="text-[10px] font-mono bg-neutral-900 border border-neutral-800 px-2.5 py-1 rounded-lg text-neutral-300" x-text="tag"></span>
-            </template>
+          <div class="grid grid-cols-2 gap-4 border-y border-neutral-950 my-4 py-4 text-[10px] font-mono text-neutral-400">
+            <div><p class="text-neutral-500 uppercase">Year</p><p class="text-neutral-200 mt-1">2026 Edition</p></div>
+            <div><p class="text-neutral-500 uppercase">Active Node</p><p class="text-neutral-200 mt-1">Valletta Release</p></div>
           </div>
         </div>
-        <button @click="selectedProject = null; triggerModal('contact')" class="w-full py-3 bg-amber-500 text-black font-semibold rounded-xl hover:bg-amber-600 transition cursor-pointer">
-          Enquire Technical Stack
-        </button>
+        <button @click="selectedProject = null; triggerModal('contact')" class="w-full py-3 bg-amber-500 text-black font-semibold rounded-xl hover:bg-amber-650 transition">Connect Stack Details</button>
       </div>
     </div>
   </div>
 
-  <!-- ══════════════ CHATBOT DRAWER ══════════════
-       NOTE: This is INSIDE the root x-data body, so it shares all state
-       (chatbotMessages, sendChatMessage, isChatLoading, chatbotSuggestions).
-       No separate x-data wrapper — that was the original bug.
-       ══════════════════════════════════════════ -->
-  <div>
-    <!-- Trigger button -->
-    <button
-      @click="isChatOpen = !isChatOpen"
-      class="fixed bottom-24 right-6 z-40 bg-neutral-900 border border-neutral-800 text-white rounded-full px-5 py-3.5 shadow-2xl flex items-center gap-2 hover:bg-neutral-800 cursor-pointer duration-300 transition-colors"
-    >
+  <!-- CHATBOT DRAWER -->
+  <div x-data="{ open: false }">
+    <button @click="open = true" class="fixed bottom-6 right-6 z-40 bg-neutral-900 border border-neutral-800 text-white rounded-full px-5 py-3.5 shadow-2xl flex items-center gap-2 hover:bg-neutral-850 cursor-pointer duration-300">
       <i data-lucide="message-square" class="w-5 h-5 text-amber-500"></i>
-      <span class="text-sm font-medium">Chat with Blurr AI</span>
+      <span class="text-sm font-medium font-sans">Chat with Blurr AI</span>
     </button>
 
-    <!-- Drawer -->
-    <div
-      x-show="isChatOpen"
-      x-cloak
-      x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-      x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-      class="fixed bottom-44 right-6 z-50 w-full max-w-sm h-[480px] flex flex-col bg-neutral-950 border border-neutral-800 rounded-3xl shadow-2xl overflow-hidden text-white"
-    >
-      <!-- Head -->
-      <div class="flex items-center justify-between bg-neutral-900 px-5 py-4 border-b border-neutral-800 shrink-0">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="text-sm font-bold">Blurr Systems AI Node</span>
-        </div>
-        <button @click="isChatOpen = false" class="text-neutral-400 hover:text-white transition-colors">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <!-- Messages -->
-      <div id="chat-arena" class="flex-1 overflow-y-auto p-4 space-y-3">
-        <template x-for="(msg, idx) in chatbotMessages" :key="idx">
-          <div :class="msg.sender === 'user' ? 'justify-end' : 'justify-start'" class="flex items-start gap-2.5">
-            <div
-              :class="msg.sender === 'user' ? 'bg-amber-500 text-black' : 'bg-neutral-900 text-neutral-200 border border-neutral-800'"
-              class="rounded-2xl px-4 py-2.5 text-xs leading-relaxed max-w-[85%]"
-              x-text="msg.text"
-            ></div>
+    <div x-show="open" style="display: none;" class="fixed inset-0 z-50 flex items-end justify-end p-4 md:p-6 pointer-events-none">
+      <div class="absolute inset-0 bg-transparent pointer-events-auto" @click="open = false"></div>
+      
+      <div class="relative w-full max-w-sm h-[480px] flex flex-col bg-neutral-950 border border-neutral-800 rounded-3xl shadow-2xl pointer-events-auto overflow-hidden text-white">
+        <div class="flex items-center justify-between bg-neutral-900 px-5 py-4 border-b border-neutral-800">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-sm font-bold">Blurr Systems AI Node</span>
           </div>
-        </template>
-        <div x-show="isChatLoading" class="flex items-center gap-1.5 p-2 bg-neutral-900/50 rounded-xl w-fit">
-          <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce"></span>
-          <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce" style="animation-delay:.1s"></span>
-          <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce" style="animation-delay:.2s"></span>
+          <button @click="open = false" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
-      </div>
 
-      <!-- Suggestion chips -->
-      <div class="px-4 py-2 border-t border-neutral-900 bg-neutral-950 flex flex-wrap gap-1.5 shrink-0">
-        <template x-for="(sug, si) in chatbotSuggestions" :key="si">
-          <button
-            @click="sendChatMessage(sug)"
-            class="text-[10px] bg-neutral-900 border border-neutral-800 px-2.5 py-1.5 rounded-full hover:border-amber-500/40 hover:text-amber-400 transition-colors truncate max-w-[160px] cursor-pointer"
-            x-text="sug"
-          ></button>
-        </template>
-      </div>
+        <div id="chat-arena" class="flex-1 overflow-y-auto p-4 space-y-3">
+          <template x-for="msg in chatbotMessages">
+            <div :class="msg.sender === 'user' ? 'justify-end' : 'justify-start'" class="flex items-start gap-2.5">
+              <div :class="msg.sender === 'user' ? 'bg-amber-500 text-black' : 'bg-neutral-900 text-neutral-200 border border-neutral-800/60'" class="rounded-2xl px-4 py-2 text-xs leading-relaxed max-w-[85%]">
+                <span x-text="msg.text"></span>
+              </div>
+            </div>
+          </template>
+          
+          <div x-show="isChatLoading" class="flex items-center gap-1.5 p-2 bg-neutral-900/50 rounded-xl w-fit">
+            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce"></span>
+            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+          </div>
+        </div>
 
-      <!-- Input -->
-      <div class="p-3 bg-neutral-900 border-t border-neutral-800 flex gap-2 shrink-0">
-        <input
-          type="text"
-          x-model="chatbotInput"
-          @keydown.enter="sendChatMessage(chatbotInput)"
-          placeholder="Type your query..."
-          class="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500 transition-colors"
-        >
-        <button @click="sendChatMessage(chatbotInput)" class="p-2.5 bg-amber-500 hover:bg-amber-600 text-black rounded-lg transition-colors cursor-pointer">
-          <i data-lucide="send" class="w-4 h-4"></i>
-        </button>
+        <!-- suggestions tags -->
+        <div class="px-4 py-2 border-t border-neutral-900/60 bg-neutral-950/80 flex flex-wrap gap-1.5">
+          <template x-for="sug in chatbotSuggestions">
+            <button @click="sendChatMessage(sug)" class="text-[10px] bg-neutral-900 border border-neutral-800 px-2.5 py-1 rounded-full hover:border-amber-500/30 truncate" x-text="sug"></button>
+          </template>
+        </div>
+
+        <div class="p-3 bg-neutral-900 border-t border-neutral-800 flex gap-2">
+          <input 
+            type="text" 
+            x-model="chatbotInput" 
+            @keydown.enter="sendChatMessage(chatbotInput)"
+            placeholder="Query Valletta node..." 
+            class="flex-1 bg-neutral-950 border border-neutral-850 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-amber-500"
+          >
+          <button @click="sendChatMessage(chatbotInput)" class="p-2 bg-amber-500 hover:bg-amber-600 text-black rounded-lg"><i data-lucide="send" class="w-4 h-4"></i></button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ══════════════ FOOTER ══════════════ -->
-  <footer class="relative z-10 bg-neutral-950 text-neutral-500 text-xs font-mono py-16 border-t border-neutral-900/60 flex flex-col items-center gap-4 text-center">
+  <!-- FOOTER -->
+  <footer class="bg-neutral-950 text-neutral-500 text-xs font-mono py-16 border-t border-neutral-900/60 flex flex-col items-center gap-4 text-center z-10 relative">
     <div class="flex items-center gap-2 text-white">
-      <i data-lucide="star" class="w-4 h-4 text-amber-500 animate-spin-slow"></i>
-      <span class="font-extrabold font-sans tracking-widest text-sm text-neutral-200">BLURR.STUDIOS</span>
+      <i data-lucide="star" class="w-4 h-4 text-amber-500 animate-spin"></i>
+      <span class="font-bold tracking-widest text-sm text-neutral-200">BLURR.STUDIOS</span>
     </div>
-    <p class="tracking-wider">Malta © 2026. ALL RIGHTS RESERVED IN BLURR MATRICES.</p>
-    <div class="flex gap-4 text-neutral-600 text-[10px] flex-wrap justify-center">
-      <a href="#" class="hover:text-amber-500 transition-colors">PRIVACY BRIEF</a>
+    <p>Malta © 2026. ALL RIGHTS RESERVED IN SECURE DIRECTORIES.</p>
+    <div class="flex gap-4 text-neutral-600 text-[10px]">
+      <a href="#privacy" class="hover:text-amber-500 transition">PRIVACY BRIEF</a>
       <span>•</span>
-      <a href="#" class="hover:text-amber-500 transition-colors">SECURITY ENVELOPE</a>
-      <span>•</span>
-      <a href="#" class="hover:text-amber-500 transition-colors font-bold">MALTA SECURE</a>
+      <a href="#terms" class="hover:text-amber-500 transition">SECURITY CORE</a>
     </div>
   </footer>
 
-  <!-- x-cloak hides elements before Alpine boots -->
-  <style>[x-cloak] { display: none !important; }</style>
-
-  <script>
-    // Re-run lucide after every Alpine reactive DOM update
-    document.addEventListener('alpine:initialized', () => {
-      lucide.createIcons();
-      // Observe mutations so icons in dynamic Alpine content (x-for, x-show) get created
-      const observer = new MutationObserver(() => lucide.createIcons());
-      observer.observe(document.body, { childList: true, subtree: true, attributes: false });
-    });
-  </script>
 </body>
 </html>
